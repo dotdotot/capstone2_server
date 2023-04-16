@@ -1,0 +1,165 @@
+version: '3'
+services:
+    capstone:
+        build:
+            context: ./vendor/laravel/sail/runtimes/8.2
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: sail-8.2/app
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '${APP_PORT:-80}:80'
+            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - sail
+        depends_on:
+            - postgres
+            - redis
+            - meilisearch
+            - minio
+            - selenium
+            - mongodb
+
+    postgres:
+        image: postgres:15
+        container_name: capstone_postgres
+        restart: always
+        volumes:
+            # - sailpostgres:/var/lib/postgresql/data
+            - 'sail-pgsql:/var/lib/postgresql/data'
+            - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
+        environment:
+            TZ: Asia/Seoul
+            # POSTGRES_USER: root
+            POSTGRES_PASSWORD: capstone_pgsql
+            POSTGRES_USER: capstone_pgsql
+            POSTGRES_DB: capstone_pgsql
+
+            # 외부 접속  허용
+            POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+            - 5434:5432
+        networks:
+            - sail
+    # pgsql:
+    #     image: 'postgres:15'
+    #     ports:
+    #         - '${FORWARD_DB_PORT:-5432}:5432'
+    #     environment:
+    #         PGPASSWORD: '${DB_PASSWORD:-secret}'
+    #         POSTGRES_DB: '${DB_DATABASE}'
+    #         POSTGRES_USER: '${DB_USERNAME}'
+    #         POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+    #     volumes:
+            # - 'sail-pgsql:/var/lib/postgresql/data'
+            # - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
+    #     networks:
+    #         - sail
+    #     healthcheck:
+    #         test:
+    #             - CMD
+    #             - pg_isready
+    #             - '-q'
+    #             - '-d'
+    #             - '${DB_DATABASE}'
+    #             - '-U'
+    #             - '${DB_USERNAME}'
+    #         retries: 3
+    #         timeout: 5s
+    mongodb:
+        image: mongo
+        restart: always
+        environment:
+            MONGO_INITDB_DATABASE: ${DB_MONGO_DATABASE}
+            MONGO_INITDB_ROOT_USERNAME: ${DB_MONGO_USERNAME}
+            MONGO_INITDB_ROOT_PASSWORD: ${DB_MONGO_PASSWORD}
+        ports:
+            - "27017:27017"
+        volumes:
+            - sail-mongodb:/data/db
+        networks:
+            - sail
+    redis:
+        image: 'redis:alpine'
+        ports:
+            - '${FORWARD_REDIS_PORT:-6379}:6379'
+        volumes:
+            - 'sail-redis:/data'
+        networks:
+            - sail
+        healthcheck:
+            test:
+                - CMD
+                - redis-cli
+                - ping
+            retries: 3
+            timeout: 5s
+    meilisearch:
+        image: 'getmeili/meilisearch:latest'
+        ports:
+            - '${FORWARD_MEILISEARCH_PORT:-7700}:7700'
+        volumes:
+            - 'sail-meilisearch:/meili_data'
+        networks:
+            - sail
+        healthcheck:
+            test:
+                - CMD
+                - wget
+                - '--no-verbose'
+                - '--spider'
+                - 'http://localhost:7700/health'
+            retries: 3
+            timeout: 5s
+    minio:
+        image: 'minio/minio:latest'
+        ports:
+            - '${FORWARD_MINIO_PORT:-9000}:9000'
+            - '${FORWARD_MINIO_CONSOLE_PORT:-8900}:8900'
+        environment:
+            MINIO_ROOT_USER: sail
+            MINIO_ROOT_PASSWORD: password
+        volumes:
+            - 'sail-minio:/data/minio'
+        networks:
+            - sail
+        command: 'minio server /data/minio --console-address ":8900"'
+        healthcheck:
+            test:
+                - CMD
+                - curl
+                - '-f'
+                - 'http://localhost:9000/minio/health/live'
+            retries: 3
+            timeout: 5s
+    selenium:
+        image: seleniarm/standalone-chromium
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        volumes:
+            - '/dev/shm:/dev/shm'
+        networks:
+            - sail
+networks:
+    sail:
+        driver: bridge
+volumes:
+    sail-pgsql:
+        driver: local
+    sail-redis:
+        driver: local
+    sail-meilisearch:
+        driver: local
+    sail-minio:
+        driver: local
+    sail-mongodb:
+        driver: local
