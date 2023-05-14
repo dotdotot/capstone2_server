@@ -17,11 +17,13 @@ return new class () extends Migration {
             # 칼럼
             $table->bigIncrements('id')->comment('동아리 번호');
             $table->string('name', 100)->nullable()->comment('동아리 이름');
+            $table->string('code', 100)->nullable()->comment('동아리 코드');
             $table->timestampsTz($precision = 3);
             $table->softDeletesTz($column = 'deleted_at', $precision = 3);
 
             # 유니크 값
             $table->unique('name');
+            $table->unique('code');
 
             # 인덱스
             $table->index('id');
