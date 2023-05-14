@@ -13,6 +13,23 @@ return new class () extends Migration {
     public function up()
     {
         # users table
+        Schema::create('clubs', function (Blueprint $table) {
+            # 칼럼
+            $table->bigIncrements('id')->comment('동아리 번호');
+            $table->string('name', 100)->nullable()->comment('동아리 이름');
+            $table->timestampsTz($precision = 3);
+            $table->softDeletesTz($column = 'deleted_at', $precision = 3);
+
+            # 유니크 값
+            $table->unique('name');
+
+            # 인덱스
+            $table->index('id');
+            $table->index('updated_at');
+            $table->index('deleted_at');
+        });
+
+        # users table
         Schema::create('users', function (Blueprint $table) {
             # 칼럼
             $table->bigIncrements('id')->comment('사용자 번호');
@@ -26,6 +43,7 @@ return new class () extends Migration {
             $table->string('address', 200)->nullable()->comment('생년월일');
             $table->date('birth_date')->nullable()->comment('생년월일');
             $table->string('password')->nullable()->comment('비밀번호');
+            $table->unsignedBigInteger('password_fail_count')->nullable()->comment('비밀번호 틀린 횟수');
             $table->timestampTz('password_updated_at', $precision = 3)->nullable()->comment('비밀번호 변경 일시');
             $table->timestampTz('last_login_at', $precision = 3)->nullable()->comment('마지막 로그인 시간');
             $table->timestampTz('banned_at', $precision = 3)->nullable()->comment('접속제한 일시');
@@ -41,8 +59,7 @@ return new class () extends Migration {
             $table->index('deleted_at');
 
             # 키값
-            // $table->foreign('company_id')->references('id')->on('companies')->onUpdate('cascade')->onDelete('cascade');
-            // $table->foreign('rank_id')->references('id')->on('ranks')->onUpdate('cascade')->onDelete('set null');
+            $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
@@ -53,6 +70,7 @@ return new class () extends Migration {
      */
     public function down()
     {
+        Schema::dropIfExists('clubs');
         Schema::dropIfExists('users');
         Schema::dropIfExists('personal_access_tokens');
     }

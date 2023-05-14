@@ -30,7 +30,7 @@ class User extends BaseModel
 
     protected $fillable = [
         'name', 'gender', 'birth_date', 'phone', 'email', 'address', 'club_id', 'rank_id', 'student_id', 'last_login_at',
-        'created_at', 'fail_count','password_updated_at','banned_at','updated_at','deleted_at'
+        'created_at', 'password_fail_count','password_updated_at','banned_at','updated_at','deleted_at'
     ];
 
     protected $hidden = [
@@ -41,23 +41,29 @@ class User extends BaseModel
     {
         parent::__construct($attributes);
 
+        $this->club_id = isset($attributes['club_id']) ? $attributes['club_id'] : null;
+        $this->rank_id = isset($attributes['rank_id']) ? $attributes['rank_id'] : null;
+
+        # 개인정보
         $this->name = isset($attributes['name']) ? $attributes['name'] : '';
+        $this->student_id = isset($attributes['student_id']) ? $attributes['student_id'] : null;
         $this->gender = isset($attributes['gender']) ? $attributes['gender'] : '';
         $this->phone = isset($attributes['phone']) ? $attributes['phone'] : [];
         $this->email = isset($attributes['email']) ? $attributes['email'] : '';
         $this->address = isset($attributes['address']) ? $attributes['address'] : '';
-        $this->club_id = isset($attributes['club_id']) ? $attributes['club_id'] : null;
-        $this->rank_id = isset($attributes['rank_id']) ? $attributes['rank_id'] : null;
-        $this->student_id = isset($attributes['student_id']) ? $attributes['student_id'] : null;
-        $this->password = isset($attributes['password']) ? $attributes['password'] : null;
-        $this->fail_count = isset($attributes['fail_count']) ? $attributes['fail_count'] : 0;
-
         $this->birth_date = isset($attributes['birth_date']) ? $attributes['birth_date'] : null;
+        # 경고 횟수
+        $this->out_count = isset($attributes['out_count']) ? $attributes['out_count'] : 0;
+
+        # 비밀번호 틀린 횟수
+        $this->password = isset($attributes['password']) ? $attributes['password'] : null;
+        $this->password_fail_count = isset($attributes['password_fail_count']) ? $attributes['password_fail_count'] : 0;
+
         $this->password_updated_at = isset($attributes['password_updated_at']) ? $attributes['password_updated_at'] : null;
         $this->last_login_at = isset($attributes['last_login_at']) ? $attributes['last_login_at'] : null;
         // 삭제/추가/수정 시간
-        $this->deleted_at = isset($attributes['deleted_at']) ? $attributes['deleted_at'] : null;
-        $this->updated_at = isset($attributes['updated_at']) ? $attributes['updated_at'] : Carbon::now();
         $this->created_at = isset($attributes['created_at']) ? $attributes['created_at'] : Carbon::now();
+        $this->updated_at = isset($attributes['updated_at']) ? $attributes['updated_at'] : Carbon::now();
+        $this->deleted_at = isset($attributes['deleted_at']) ? $attributes['deleted_at'] : null;
     }
 }
