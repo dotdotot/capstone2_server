@@ -4,8 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
+    protected $connection = 'mongodb';
     /**
      * Run the migrations.
      *
@@ -13,10 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('mongodb_tables', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        Schema::connection($this->connection)
+            ->table('mongodb_table', function (Blueprint $collection) {
+                $collection->index('failed_at');
+                $collection->index('created_at');
+            });
     }
 
     /**
@@ -27,5 +28,6 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('mongodb_tables');
+        Schema::dropIfExists('settings');
     }
 };
