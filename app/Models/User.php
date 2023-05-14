@@ -20,6 +20,7 @@ class User extends BaseModel
     protected $dates = [
         'password_updated_at',
         'last_login_at',
+        'banned_at',
         'deleted_at',
     ];
 
@@ -29,7 +30,7 @@ class User extends BaseModel
 
     protected $fillable = [
         'name', 'gender', 'birth_date', 'phone', 'email', 'address', 'club_id', 'rank_id', 'student_id', 'last_login_at',
-        'created_at', 'fail_count','password_updated_at','updated_at','deleted_at'
+        'created_at', 'fail_count','password_updated_at','banned_at','updated_at','deleted_at'
     ];
 
     protected $hidden = [
