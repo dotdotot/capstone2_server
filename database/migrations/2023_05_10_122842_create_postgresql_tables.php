@@ -12,7 +12,7 @@ return new class () extends Migration {
      */
     public function up()
     {
-        # users table
+        # clubs table
         Schema::create('clubs', function (Blueprint $table) {
             # 칼럼
             $table->bigIncrements('id')->comment('동아리 번호');
@@ -31,11 +31,36 @@ return new class () extends Migration {
             $table->index('deleted_at');
         });
 
+        # departments table
+        Schema::create('departments', function (Blueprint $table) {
+            # 칼럼
+            $table->bigIncrements('id')->comment('학과 번호');
+            $table->unsignedBigInteger('club_id')->nullable()->comment('동아리 번호');
+            $table->string('name', 100)->nullable()->comment('학과 이름');
+            $table->string('code', 100)->nullable()->comment('학과 코드');
+            $table->unsignedBigInteger('position')->nullable()->comment('학과 순서');
+            $table->timestampsTz($precision = 3);
+            $table->softDeletesTz($column = 'deleted_at', $precision = 3);
+
+            # 유니크 값
+            $table->unique('name');
+            $table->unique('code');
+
+            # 인덱스
+            $table->index('id');
+            $table->index('updated_at');
+            $table->index('deleted_at');
+
+            # 키값
+            $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
+        });
+
         # users table
         Schema::create('users', function (Blueprint $table) {
             # 칼럼
             $table->bigIncrements('id')->comment('사용자 번호');
             $table->unsignedBigInteger('club_id')->comment('동아리 번호');
+            $table->unsignedBigInteger('department_id')->comment('학과 번호');
             $table->unsignedBigInteger('rank_id')->nullable()->comment('직위번호');
             $table->unsignedBigInteger('student_id')->nullable()->comment('학생 번호');
             $table->string('name', 100)->nullable()->comment('성+이름');
@@ -62,6 +87,7 @@ return new class () extends Migration {
 
             # 키값
             $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('department_id')->references('id')->on('departments')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
@@ -72,8 +98,9 @@ return new class () extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('clubs');
         Schema::dropIfExists('users');
+        Schema::dropIfExists('departments');
+        Schema::dropIfExists('clubs');
         Schema::dropIfExists('personal_access_tokens');
     }
 };

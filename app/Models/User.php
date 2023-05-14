@@ -29,7 +29,7 @@ class User extends BaseModel
     ];
 
     protected $fillable = [
-        'name', 'gender', 'birth_date', 'phone', 'email', 'address', 'club_id', 'rank_id', 'student_id', 'last_login_at',
+        'name', 'gender', 'birth_date', 'phone', 'email', 'address', 'club_id', 'department_id', 'rank_id', 'student_id', 'last_login_at',
         'created_at', 'password_fail_count','password_updated_at','banned_at','updated_at','deleted_at'
     ];
 
@@ -42,6 +42,7 @@ class User extends BaseModel
         parent::__construct($attributes);
 
         $this->club_id = isset($attributes['club_id']) ? $attributes['club_id'] : null;
+        $this->department_id = isset($attributes['department_id']) ? $attributes['department_id'] : null;
         $this->rank_id = isset($attributes['rank_id']) ? $attributes['rank_id'] : null;
 
         # 개인정보
