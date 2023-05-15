@@ -14,11 +14,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        if (app()->environment('local')) {
+            # 동아리 생성
+            $this->call(ClubSeeder::class);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+            # 학과 생성(동아리별 학과 존재)
+            $this->call(DepartmentSeeder::class);
+
+            # 사용자 생성
+            $this->call(UserSeeder::class);
+        }
     }
 }
