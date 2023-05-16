@@ -69,9 +69,10 @@ return new class () extends Migration {
             $table->string('gender', 100)->nullable()->comment('성별');
             $table->json('phone')->nullable()->comment('전화번호');
             $table->string('email', 100)->nullable()->comment('이메일 주소');
-            $table->string('address', 200)->nullable()->comment('생년월일');
+            $table->string('address', 200)->nullable()->comment('주소');
             $table->date('birth_date')->nullable()->comment('생년월일');
             $table->string('password')->nullable()->comment('비밀번호');
+            $table->unsignedBigInteger('out_count')->nullable()->comment('경고 횟수');
             $table->unsignedBigInteger('password_fail_count')->nullable()->comment('비밀번호 틀린 횟수');
             $table->timestampTz('password_updated_at', $precision = 3)->nullable()->comment('비밀번호 변경 일시');
             $table->timestampTz('last_login_at', $precision = 3)->nullable()->comment('마지막 로그인 시간');
