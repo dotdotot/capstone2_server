@@ -43,6 +43,8 @@ class TestCommand extends Command
      */
     public function handle()
     {
+        dd(User::first());
+
         dd($date = DateTime::createFromFormat('Ymd', '19980308'));
         $department = Club::where('id', 3)->first();
         dd($department);
