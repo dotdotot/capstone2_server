@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use App\Models\Club;
 use App\Models\Department;
 use App\Models\User;
+use App\Models\Rank;
 
 class UserSeeder extends Seeder
 {
@@ -30,7 +31,12 @@ class UserSeeder extends Seeder
             [
                 'club_id' => $club->id,
                 'department_id' => $department->id,
-                'rank_id' => null,
+                'rank_id' => collect(
+                    Rank::where('club_id', 1)
+                            ->where('name', '방장')
+                            ->select('id')
+                            ->first()
+                )->first(),
                 'name' => '차정준',
                 'student_id' => 2161045,
                 'gender' => '남자',
@@ -48,7 +54,12 @@ class UserSeeder extends Seeder
             [
                 'club_id' => $club->id,
                 'department_id' => $department->id,
-                'rank_id' => null,
+                'rank_id' => collect(
+                    Rank::where('club_id', 1)
+                            ->where('name', '팀장')
+                            ->select('id')
+                            ->first()
+                )->first(),
                 'name' => '임준형',
                 'student_id' => 1961049,
                 'gender' => '남자',
@@ -66,7 +77,12 @@ class UserSeeder extends Seeder
             [
                 'club_id' => $club->id,
                 'department_id' => $department->id,
-                'rank_id' => null,
+                'rank_id' => collect(
+                    Rank::where('club_id', 1)
+                            ->where('name', '팀장')
+                            ->select('id')
+                            ->first()
+                )->first(),
                 'name' => '이다솔',
                 'student_id' => 2161073,
                 'gender' => '여자',
@@ -84,7 +100,12 @@ class UserSeeder extends Seeder
             [
                 'club_id' => $club->id,
                 'department_id' => $department->id,
-                'rank_id' => null,
+                'rank_id' => collect(
+                    Rank::where('club_id', 1)
+                            ->where('name', '일반')
+                            ->select('id')
+                            ->first()
+                )->first(),
                 'name' => '김준석',
                 'student_id' => 1761013,
                 'gender' => '남자',
@@ -102,7 +123,12 @@ class UserSeeder extends Seeder
             [
                 'club_id' => $club->id,
                 'department_id' => $department->id,
-                'rank_id' => null,
+                'rank_id' => collect(
+                    Rank::where('club_id', 1)
+                            ->where('name', '일반')
+                            ->select('id')
+                            ->first()
+                )->first(),
                 'name' => '홍민선',
                 'student_id' => 2161057,
                 'gender' => '여자',
@@ -120,7 +146,12 @@ class UserSeeder extends Seeder
             [
                 'club_id' => $club->id,
                 'department_id' => $department->id,
-                'rank_id' => null,
+                'rank_id' => collect(
+                    Rank::where('club_id', 1)
+                            ->where('name', '일반')
+                            ->select('id')
+                            ->first()
+                )->first(),
                 'name' => '윤성직',
                 'student_id' => 1761034,
                 'gender' => '남자',
@@ -138,7 +169,12 @@ class UserSeeder extends Seeder
             [
                 'club_id' => $club->id,
                 'department_id' => $department->id,
-                'rank_id' => null,
+                'rank_id' => collect(
+                    Rank::where('club_id', 1)
+                            ->where('name', '일반')
+                            ->select('id')
+                            ->first()
+                )->first(),
                 'name' => '김수진',
                 'student_id' => 2161086,
                 'gender' => '여자',

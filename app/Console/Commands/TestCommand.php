@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Models\Club;
 use App\Models\Department;
 use App\Models\User;
+use App\Models\Rank;
 
 class TestCommand extends Command
 {
@@ -43,7 +44,7 @@ class TestCommand extends Command
      */
     public function handle()
     {
-        dd(User::first());
+        dd(collect(Rank::where('club_id', 1)->where('name', '방장')->select('id')->first())->first());
 
         dd($date = DateTime::createFromFormat('Ymd', '19980308'));
         $department = Club::where('id', 3)->first();
