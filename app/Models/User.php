@@ -70,6 +70,21 @@ class User extends BaseModel
         $this->deleted_at = isset($attributes['deleted_at']) ? $attributes['deleted_at'] : null;
     }
 
+    public function club()
+    {
+        return $this->belongsTo(Club::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function rank()
+    {
+        return $this->hasOne(Rank::class);
+    }
+
     # 비밀번호 암호화
     public static function passwordEncode($password)
     {

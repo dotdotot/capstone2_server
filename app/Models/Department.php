@@ -38,4 +38,9 @@ class Department extends BaseModel
         $this->updated_at = isset($attributes['updated_at']) ? $attributes['updated_at'] : Carbon::now();
         $this->deleted_at = isset($attributes['deleted_at']) ? $attributes['deleted_at'] : null;
     }
+
+    public function club()
+    {
+        return $this->belongsTo(Club::class);
+    }
 }
