@@ -57,6 +57,28 @@ return new class () extends Migration {
             $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
         });
 
+        # ranks table
+        Schema::create('ranks', function (Blueprint $table) {
+            # 칼럼
+            $table->bigIncrements('id')->comment('랭크 번호');
+            $table->unsignedBigInteger('club_id')->nullable()->comment('동아리 번호');
+            $table->string('name', 100)->nullable()->comment('랭크 이름');
+            $table->unsignedBigInteger('position')->nullable()->comment('랭크 순서');
+            $table->timestampsTz($precision = 3);
+            $table->softDeletesTz($column = 'deleted_at', $precision = 3);
+
+            # 유니크 값
+            $table->unique('name');
+
+            # 인덱스
+            $table->index('id');
+            $table->index('updated_at');
+            $table->index('deleted_at');
+
+            # 키값
+            $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
+        });
+
         # users table
         Schema::create('users', function (Blueprint $table) {
             # 칼럼
@@ -91,6 +113,7 @@ return new class () extends Migration {
             # 키값
             $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('department_id')->references('id')->on('departments')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('rank_id')->references('id')->on('ranks')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
@@ -103,6 +126,7 @@ return new class () extends Migration {
     {
         Schema::dropIfExists('users');
         Schema::dropIfExists('departments');
+        Schema::dropIfExists('ranks');
         Schema::dropIfExists('clubs');
         Schema::dropIfExists('personal_access_tokens');
     }
