@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Jenssegers\Mongodb\Eloquent\HybridRelations;
 
+use Illuminate\Support\Facades\Hash;
+
 /**
  * public @method departments()
  */
@@ -30,11 +32,11 @@ class User extends BaseModel
 
     protected $fillable = [
         'name', 'gender', 'birth_date', 'phone', 'email', 'address', 'club_id', 'department_id', 'rank_id', 'student_id', 'last_login_at',
-        'created_at', 'password_fail_count','password_updated_at','banned_at','updated_at','deleted_at'
+        'created_at', 'password', 'password_fail_count','password_updated_at','banned_at','updated_at','deleted_at'
     ];
 
     protected $hidden = [
-        'password',
+        'password'
     ];
 
     public function __construct(array $attributes = array())
@@ -66,5 +68,33 @@ class User extends BaseModel
         $this->created_at = isset($attributes['created_at']) ? $attributes['created_at'] : Carbon::now();
         $this->updated_at = isset($attributes['updated_at']) ? $attributes['updated_at'] : Carbon::now();
         $this->deleted_at = isset($attributes['deleted_at']) ? $attributes['deleted_at'] : null;
+    }
+
+    # 비밀번호 암호화
+    public static function passwordEncode($password)
+    {
+        if ($password === null) {
+            return false;
+        }
+
+        $hashPassword = Hash::make($password);
+        return $hashPassword;
+    }
+
+    # 비밀번호 확인
+    public static function passwordDecode($userId, $password)
+    {
+        $user = User::where('id', $userId)->first();
+        if($user === null || $user->isEmpty()) {
+            return false;
+        }
+
+        if (Hash::check($password, $user->password)) {
+            return true;
+        } else {
+            $user->password_fail_count += 1;
+            $user->save();
+            return false;
+        }
     }
 }
