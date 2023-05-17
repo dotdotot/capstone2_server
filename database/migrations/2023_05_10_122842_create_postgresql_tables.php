@@ -178,6 +178,37 @@ return new class () extends Migration {
             $table->foreign('department_id')->references('id')->on('departments')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('rank_id')->references('id')->on('ranks')->onUpdate('cascade')->onDelete('cascade');
         });
+
+        # members table
+        Schema::create('members', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('club_id')->comment('동아리번호');
+            $table->unsignedBigInteger('department_id')->nullable()->comment('학과번호');
+            $table->unsignedBigInteger('team_id')->nullable()->comment('팀번호');
+            $table->unsignedBigInteger('user_id')->comment('동아리 회원 번호');
+            $table->unsignedBigInteger('rank_id')->nullable()->comment('직위번호');
+            $table->unsignedSmallInteger('position')->comment('표시순서');
+            $table->boolean('default')->default(false)->comment('사용자의 메인 팀 여부');
+            $table->boolean('leader')->default(false)->comment('팀 리더 여부');
+            $table->timestampsTz($precision = 3);
+            $table->softDeletesTz($column = 'deleted_at', $precision = 3);
+
+            // 유니크
+            $table->unique(['team_id', 'user_id']);
+
+            // 인덱스
+            $table->index('club_id');
+            $table->index('department_id');
+            $table->index('user_id');
+            $table->index('deleted_at');
+
+            // 키 값
+            $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('department_id')->references('id')->on('departments')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('team_id')->references('id')->on('teams')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('rank_id')->references('id')->on('ranks')->onUpdate('cascade')->onDelete('set null');
+        });
     }
 
     /**
@@ -188,6 +219,7 @@ return new class () extends Migration {
     public function down()
     {
         # 테이블 삭제
+        Schema::dropIfExists('members');
         Schema::dropIfExists('users');
         Schema::dropIfExists('team_closure');
         Schema::dropIfExists('teams');

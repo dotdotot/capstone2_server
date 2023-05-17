@@ -29,6 +29,9 @@ class DatabaseSeeder extends Seeder
 
             # 사용자 생성
             $this->call(UserSeeder::class);
+
+            # 멤버 생성
+            $this->call(MemberSeeder::class);
         }
     }
 }
