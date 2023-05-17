@@ -24,6 +24,9 @@ class DatabaseSeeder extends Seeder
             # 랭크 생성
             $this->call(RankSeeder::class);
 
+            # 팀 생성
+            $this->call(TeamSeeder::class);
+
             # 사용자 생성
             $this->call(UserSeeder::class);
         }

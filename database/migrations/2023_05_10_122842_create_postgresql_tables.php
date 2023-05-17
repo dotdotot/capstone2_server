@@ -79,6 +79,69 @@ return new class () extends Migration {
             $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
         });
 
+        Schema::create('teams', function (Blueprint $table) {
+            $table->increments('id')->comment('팀 아이디');
+            $table->unsignedBigInteger('club_id')->nullable()->comment('동아리 번호');
+            $table->string('name', 50)->nullable()->comment('팀 이름');
+            $table->string('path', 100)->nullable()->comment('상위팀 포함 팀 경로');
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->unsignedBigInteger('position');
+            $table->timestampsTz($precision = 3);
+            $table->softDeletesTz($column = 'deleted_at', $precision = 3);
+
+            # 유니크 값
+            $table->unique('name');
+
+            # 인덱스
+            $table->index('id');
+            $table->index('club_id');
+            $table->index('parent_id');
+            $table->index('position');
+            $table->index('deleted_at');
+
+            # 키값
+            $table->foreign('club_id')->references('id')->on('teams')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('parent_id')->references('id')->on('teams')->onUpdate('cascade')->onDelete('set null');
+        });
+
+        Schema::create('team_closure', function (Blueprint $table) {
+            $table->bigIncrements('closure_id');
+            $table->unsignedBigInteger('ancestor');
+            $table->unsignedBigInteger('descendant');
+            $table->unsignedInteger('depth');
+
+            # 인덱스
+            $table->index('ancestor');
+            $table->index('descendant');
+
+            # 키값
+            $table->foreign('ancestor')->references('id')->on('teams')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('descendant')->references('id')->on('teams')->onUpdate('cascade')->onDelete('cascade');
+        });
+
+        // # teams table
+        // Schema::create('teams', function (Blueprint $table) {
+        //     # 칼럼
+        //     $table->bigIncrements('id')->comment('팀 번호 ');
+        //     $table->unsignedBigInteger('club_id')->nullable()->comment('동아리 번호');
+        //     $table->unsignedBigInteger('parent_team_id')->nullable()->comment('상위 팀 번호');
+        //     $table->string('name', 100)->nullable()->comment('팀 이름');
+        //     $table->unsignedBigInteger('position')->nullable()->comment('팀 순서');
+        //     $table->timestampsTz($precision = 3);
+        //     $table->softDeletesTz($column = 'deleted_at', $precision = 3);
+
+        //     # 유니크 값
+        //     $table->unique('name');
+
+        //     # 인덱스
+        //     $table->index('id');
+        //     $table->index('updated_at');
+        //     $table->index('deleted_at');
+
+        //     # 키값
+        //     $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
+        // });
+
         # users table
         Schema::create('users', function (Blueprint $table) {
             # 칼럼
@@ -124,9 +187,12 @@ return new class () extends Migration {
      */
     public function down()
     {
+        # 테이블 삭제
         Schema::dropIfExists('users');
-        Schema::dropIfExists('departments');
+        Schema::dropIfExists('team_closure');
+        Schema::dropIfExists('teams');
         Schema::dropIfExists('ranks');
+        Schema::dropIfExists('departments');
         Schema::dropIfExists('clubs');
         Schema::dropIfExists('personal_access_tokens');
     }

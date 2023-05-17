@@ -10,6 +10,7 @@ use App\Models\Club;
 use App\Models\Department;
 use App\Models\User;
 use App\Models\Rank;
+use App\Models\Team;
 
 class TestCommand extends Command
 {
@@ -44,6 +45,25 @@ class TestCommand extends Command
      */
     public function handle()
     {
+        $topTeam = new Team([
+            'club_id' => 1,
+            'parent_id' => null,
+            'name' => 'C403',
+            'position' => Team::where('club_id', 1)->count(),
+            'path' => 'C403',
+        ]);
+
+        $a = new Team([
+            'club_id' => 1,
+            'parent_id' => 4,
+            'name' => '룩밑에팀에밑에팀',
+            'position' => Team::where('club_id', 1)->count(),
+            'path' => $topTeam->name . ' => ' . '룩 => ' . '룩밑에팀 => 룩밑에팀에밑에팀'
+        ]);
+        $a->save();
+
+        dd($a);
+
         dd(collect(Rank::where('club_id', 1)->where('name', '방장')->select('id')->first())->first());
 
         dd($date = DateTime::createFromFormat('Ymd', '19980308'));
