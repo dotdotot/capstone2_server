@@ -129,6 +129,29 @@ class UserSeeder extends Seeder
                             ->select('id')
                             ->first()
                 )->first(),
+                'name' => '이민형',
+                'student_id' => 2033041,
+                'gender' => '여자',
+                'phone' => [
+                    '010-2778-7431'
+                ],
+                'email' => 'mi75265@gmail.com',
+                'password' =>
+                    User::passwordEncode('mi75265@gmail.com') !== null
+                        ? User::passwordEncode('mi75265@gmail.com')
+                        : Hash::make('mi75265@gmail.com'),
+                'address' => '대전 중구',
+                'birth_date' => '2001-11-14',
+            ],
+            [
+                'club_id' => $club->id,
+                'department_id' => $department->id,
+                'rank_id' => collect(
+                    Rank::where('club_id', 1)
+                            ->where('name', '일반')
+                            ->select('id')
+                            ->first()
+                )->first(),
                 'name' => '홍민선',
                 'student_id' => 2161057,
                 'gender' => '여자',
