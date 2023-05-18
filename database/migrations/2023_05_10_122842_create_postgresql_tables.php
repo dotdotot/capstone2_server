@@ -192,7 +192,7 @@ return new class () extends Migration {
             $table->boolean('leader')->default(false)->comment('팀 리더 여부');
             $table->timestampsTz($precision = 3);
             $table->softDeletesTz($column = 'deleted_at', $precision = 3);
-
+            deqwlfnwefjkln;
             // 유니크
             $table->unique(['team_id', 'user_id']);
 
