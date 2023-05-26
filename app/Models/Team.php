@@ -62,13 +62,18 @@ class Team extends Entity
         return $this->belongsTo(Club::class, 'parent_id');
     }
 
+    public function members()
+    {
+        return $this->hasMany(Member::class);
+    }
+
     public function closureDescendants()
     {
-        return $this->hasMany(ClubClosure::class, 'ancestor');
+        return $this->hasMany(TeamClosure::class, 'ancestor');
     }
 
     public function closureAncestors()
     {
-        return $this->hasMany(ClubClosure::class, 'descendant');
+        return $this->hasMany(TeamClosure::class, 'descendant');
     }
 }
