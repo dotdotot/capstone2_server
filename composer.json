@@ -8,11 +8,14 @@
         "php": "^8.0.2",
         "franzose/closure-table": "^6.1",
         "guzzlehttp/guzzle": "^7.2",
+        "illuminate/auth": "*",
         "jenssegers/mongodb": "^3.9",
         "laravel/framework": "^9.19",
+        "laravel/passport": "^10.4",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
-        "mongodb/mongodb": "^1.15"
+        "mongodb/mongodb": "^1.15",
+        "tymon/jwt-auth": "^2.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
