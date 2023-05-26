@@ -50,6 +50,7 @@ return new class () extends Migration {
 
             # 인덱스
             $table->index('id');
+            $table->index('name');
             $table->index('updated_at');
             $table->index('deleted_at');
 
@@ -209,6 +210,60 @@ return new class () extends Migration {
             $table->foreign('team_id')->references('id')->on('teams')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('rank_id')->references('id')->on('ranks')->onUpdate('cascade')->onDelete('set null');
         });
+
+        # rank_permissions table
+        Schema::create('rank_permissions', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('club_id')->nullable()->comment('동아리번호');
+            $table->unsignedBigInteger('rank_id')->nullable()->comment('랭크번호');
+            $table->boolean('board_access')->comment('게시판 권한');
+            $table->boolean('comment_access')->comment('댓글 권한');
+            $table->boolean('image_add_access')->comment('이미지 업로드 권한');
+            $table->boolean('anonymous_comment_access')->comment('익명 댓글 권한');
+            $table->boolean('community_add_access')->comment('커뮤니티 추가 권한');
+            $table->boolean('user_ben_access')->comment('사용자 벤 권한');
+            $table->boolean('admin_board_access')->comment('관리자 관련 게시판 탭 권한');
+            $table->boolean('user_change_access')->comment('특정 사용자 변경 권한');
+            $table->boolean('admin_access')->comment('어드민 권한');
+            $table->unsignedSmallInteger('position')->comment('표시순서');
+            $table->timestampsTz($precision = 3);
+            $table->softDeletesTz($column = 'deleted_at', $precision = 3);
+
+            // 유니크
+            $table->unique(['club_id', 'rank_id']);
+
+            // 인덱스
+            $table->index('club_id');
+            $table->index('rank_id');
+            $table->index('deleted_at');
+
+            // 키 값
+            $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('rank_id')->references('id')->on('ranks')->onUpdate('cascade')->onDelete('cascade');
+        });
+
+        # access_tokens table
+        Schema::create('jwt_token', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('club_id')->comment('동아리번호');
+            $table->unsignedBigInteger('user_id')->comment('랭크번호');
+            $table->string('access_token', 500)->nullable()->comment('액세스토큰');
+            $table->string('refresh_token', 500)->nullable()->comment('재발급토큰');
+            $table->timestampsTz($precision = 3);
+            $table->softDeletesTz($column = 'deleted_at', $precision = 3);
+
+            // 유니크
+            $table->unique(['club_id', 'user_id']);
+
+            // 인덱스
+            $table->index('club_id');
+            $table->index('user_id');
+            $table->index('deleted_at');
+
+            // 키 값
+            $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+        });
     }
 
     /**
@@ -219,6 +274,8 @@ return new class () extends Migration {
     public function down()
     {
         # 테이블 삭제
+        Schema::dropIfExists('jwt_token');
+        Schema::dropIfExists('rank_permissions');
         Schema::dropIfExists('members');
         Schema::dropIfExists('users');
         Schema::dropIfExists('team_closure');

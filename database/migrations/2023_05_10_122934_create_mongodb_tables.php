@@ -2,10 +2,11 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Jenssegers\Mongodb\Schema\Blueprint as JenssegersBlueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class () extends Migration {
-    protected $connection = 'mongodb';
+    protected $mongoConnection = 'mongodb';
     /**
      * Run the migrations.
      *
@@ -13,11 +14,35 @@ return new class () extends Migration {
      */
     public function up()
     {
-        Schema::connection($this->connection)
-            ->table('mongodb_table', function (Blueprint $collection) {
-                $collection->index('failed_at');
-                $collection->index('created_at');
-            });
+        if (!Schema::connection($this->mongoConnection)->hasTable('user_login')) {
+            Schema::connection($this->mongoConnection)
+                ->table('user_login', function (JenssegersBlueprint $collection) {
+                    $collection->index('club_id');
+                    $collection->index('user_id');
+                    $collection->index('updated_at');
+                    $collection->index('deleted_at');
+                });
+        }
+
+        if (!Schema::connection($this->mongoConnection)->hasTable('cctv_consents')) {
+            Schema::connection($this->mongoConnection)
+                ->table('cctv_consents', function (JenssegersBlueprint $collection) {
+                    $collection->index('club_id');
+                    $collection->index('user_id');
+                    $collection->index('updated_at');
+                    $collection->index('deleted_at');
+                });
+        }
+
+        if (!Schema::connection($this->mongoConnection)->hasTable('project_consents')) {
+            Schema::connection($this->mongoConnection)
+                ->table('project_consents', function (JenssegersBlueprint $collection) {
+                    $collection->index('club_id');
+                    $collection->index('user_id');
+                    $collection->index('updated_at');
+                    $collection->index('deleted_at');
+                });
+        }
     }
 
     /**
@@ -27,7 +52,6 @@ return new class () extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('mongodb_tables');
-        Schema::dropIfExists('settings');
+        Schema::connection($this->mongoConnection)->dropIfExists('user_login');
     }
 };
