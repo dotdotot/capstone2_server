@@ -43,4 +43,17 @@ class Department extends BaseModel
     {
         return $this->belongsTo(Club::class);
     }
+
+    public static function departmentCodeCreate()
+    {
+        # Minimum,Maximum value of the random code
+        $min = 1000;
+        $max = 9999;
+
+        do {
+            $randomCode = random_int($min, $max);
+        } while (Department::where('code', 1)->get()->isNotEmpty());
+
+        return $randomCode;
+    }
 }
