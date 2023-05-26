@@ -5,6 +5,9 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use DateTime;
 use Carbon\Carbon;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Faker\Factory as Faker;
 
 use App\Models\Club;
 use App\Models\Department;
@@ -12,6 +15,13 @@ use App\Models\User;
 use App\Models\Rank;
 use App\Models\Team;
 use App\Models\Member;
+use App\Models\UserLogin;
+use App\Models\RankPermission;
+use App\Models\JwtToken;
+
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Token;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 class TestCommand extends Command
 {
@@ -46,6 +56,89 @@ class TestCommand extends Command
      */
     public function handle()
     {
+        // $user = User::where('name', '김준석')->first();
+        // $token = JwtToken::jwtToken($user);
+        // dd($token);
+        $accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0LCJleHAiOjE2ODQ2NzMyNDh9.F3xCCn4k1vKG-UoOYltLC1RFnaedx91n2gkmjrBv5Ug";
+        $key = config('jwt.secret');
+
+        $decodedToken = JWT::decode($accessToken, new Key($key, 'HS256'));
+        $expirationTime = $decodedToken->exp;
+
+        // Convert expiration time to a human-readable format
+        $expirationDateTime = date('Y-m-d H:i:s', $expirationTime);
+
+        dd("Access token expiration time: " . $expirationDateTime);
+
+
+        $club = Club::where('name', 'C403')->first();
+        $ranks = Rank::where('club_id', $club->id)->get();
+
+        # 방장 권한
+        $adminUserPermission = new RankPermission();
+        $adminUserPermission->club_Id = $club->id;
+
+        dd($ranks->where('club_id', $club->id)->where('name', '방장')->value('id'));
+        $user = User::InRandomOrder()->select(['id'])->first()['id'];
+        dd($user);
+        $faker = Faker::create('ko_KR');
+        $club = Club::where('name', 'C403')->select('id', 'name')->first();
+        $department = Department::where('club_id', $club->id)->first();
+
+        $userLogin = new UserLogin();
+        $userLogin->club_id = $club->id;
+        $userLogin->user_id = 10;
+        $userLogin->ip = $faker->ipv4;
+        $userLogin->save();
+        dd(1);
+        // 모든 부서 조회
+        $departments = Team::with([
+            'members.user:id,name',
+            'closureDescendants'
+        ])
+            ->where('club_id', 1)
+            ->orderByRaw('path collate "C"')
+            ->get()
+            ->map(function ($team, $index) {
+                $team->type = 'team';
+
+                $childrenTeams = $team->closureDescendants->pluck('descendant');
+                // 하위부서 포함 사용자 수
+                $team->number_of_user = Member::whereIn('team_id', $childrenTeams->toArray())->count();
+                // 해당 부서 사용자 수
+                $team->number_of_this_user = $team->members->where('default', true)->count();
+                // 하위부서의 id
+                $team->children_teams = $childrenTeams->diff([$team->id])->flatten()->toArray();
+                // 해당 부서의 사용자
+                $team->users = ($team->members->pluck('user.name')->toArray());
+                // 최상위 부서는 회사
+                if ($team->parent_id === null) {
+                    $team->type = 'team';
+                    $team->position = 0;
+                }
+                if ($index === 0) {
+                    $team->parent_id = null;
+                }
+
+                return $team->only([
+                    'id', 'club_id', 'parent_id', 'name', 'position', 'path',
+                    'type', 'number_of_user', 'number_of_this_user', 'users', 'children_teams'
+                ]);
+            });
+
+        dd($departments->toArray());
+
+        $faker = Faker::create('ko_KR');
+        $team = Team::where('id', 2)->first();
+        dd($team->closureAncestors->toArray());
+        dd(Department::whereNotIn('name', ['컴퓨터공학과'])->inRandomOrder()->first());
+
+        dd($faker->numerify('테스트학과 ##'));
+        // faker->metropolitanCity
+        // $faker->cellPhoneNumber;
+
+        dd(Team::whereNotNull('parent_id')->inRandomOrder()->first()->id);
+
         dd(Team::where('name', '컴온')->first()->name);
         $club = Club::where('name', 'C403')->first();
         $department = Department::where('name', '컴퓨터공학과')->first();
