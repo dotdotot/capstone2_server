@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'api',
         'passwords' => 'users',
     ],
 
@@ -36,6 +36,15 @@ return [
     */
 
     'guards' => [
+        'api' => [
+            'driver' => 'passport',
+            'provider' => 'users',
+            'hash' => false,
+            'expire_in' => [
+                'access_token' => 60, // 1 hour in minutes
+                'refresh_token' => 525600, // 1 year in minutes
+            ],
+        ],
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
@@ -90,7 +99,7 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => 'password_resets',
-            'expire' => 60,
+            'expire' => 1,
             'throttle' => 60,
         ],
     ],
