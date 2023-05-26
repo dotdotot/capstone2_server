@@ -10,6 +10,8 @@ use Illuminate\Console\Command;
 use DateTime;
 use Carbon\Carbon;
 
+use Faker\Factory as Faker;
+
 use App\Models\Club;
 use App\Models\Department;
 use App\Models\User;
@@ -24,8 +26,15 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
+        $faker = Faker::create('ko_KR');
         $club = Club::where('name', 'C403')->select('id', 'name')->first();
         $department = Department::where('club_id', $club->id)->first();
+        $normalRankId =collect(
+            Rank::where('club_id', 1)
+                    ->where('name', '일반')
+                    ->select('id')
+                    ->first()
+        )->first();
 
         $users = [
             [
@@ -100,12 +109,7 @@ class UserSeeder extends Seeder
             [
                 'club_id' => $club->id,
                 'department_id' => $department->id,
-                'rank_id' => collect(
-                    Rank::where('club_id', 1)
-                            ->where('name', '일반')
-                            ->select('id')
-                            ->first()
-                )->first(),
+                'rank_id' => $normalRankId,
                 'name' => '김준석',
                 'student_id' => 1761013,
                 'gender' => '남자',
@@ -123,12 +127,7 @@ class UserSeeder extends Seeder
             [
                 'club_id' => $club->id,
                 'department_id' => $department->id,
-                'rank_id' => collect(
-                    Rank::where('club_id', 1)
-                            ->where('name', '일반')
-                            ->select('id')
-                            ->first()
-                )->first(),
+                'rank_id' => $normalRankId,
                 'name' => '이민형',
                 'student_id' => 2033041,
                 'gender' => '여자',
@@ -146,12 +145,7 @@ class UserSeeder extends Seeder
             [
                 'club_id' => $club->id,
                 'department_id' => $department->id,
-                'rank_id' => collect(
-                    Rank::where('club_id', 1)
-                            ->where('name', '일반')
-                            ->select('id')
-                            ->first()
-                )->first(),
+                'rank_id' => $normalRankId,
                 'name' => '홍민선',
                 'student_id' => 2161057,
                 'gender' => '여자',
@@ -169,12 +163,7 @@ class UserSeeder extends Seeder
             [
                 'club_id' => $club->id,
                 'department_id' => $department->id,
-                'rank_id' => collect(
-                    Rank::where('club_id', 1)
-                            ->where('name', '일반')
-                            ->select('id')
-                            ->first()
-                )->first(),
+                'rank_id' => $normalRankId,
                 'name' => '윤성직',
                 'student_id' => 1761034,
                 'gender' => '남자',
@@ -192,12 +181,7 @@ class UserSeeder extends Seeder
             [
                 'club_id' => $club->id,
                 'department_id' => $department->id,
-                'rank_id' => collect(
-                    Rank::where('club_id', 1)
-                            ->where('name', '일반')
-                            ->select('id')
-                            ->first()
-                )->first(),
+                'rank_id' => $normalRankId,
                 'name' => '김수진',
                 'student_id' => 2161086,
                 'gender' => '여자',
@@ -213,6 +197,29 @@ class UserSeeder extends Seeder
                 'birth_date' => '2002-02-23',
             ],
         ];
+
+        for($i = 0; $i < 100; $i++) {
+            $department = Department::whereNotIn('id', [1])->inRandomOrder()->first();
+            $randomEmail = $faker->email;
+            array_push($users, [
+                'club_id' => $club->id,
+                'department_id' => $department->id,
+                'rank_id' => $normalRankId,
+                'name' => $faker->name,
+                'student_id' => $faker->numerify('2######'),
+                'gender' => random_int(0, 1) == 0 ? '남자' : '여자',
+                'phone' => [
+                    $faker->numerify('010-####-####')
+                ],
+                'email' => $randomEmail,
+                'password' =>
+                    User::passwordEncode($randomEmail) !== null
+                        ? User::passwordEncode($randomEmail)
+                        : Hash::make($randomEmail),
+                'address' => $faker->address,
+                'birth_date' => $faker->date($format = 'Y-m-d', $max = 'now'),
+            ]);
+        }
 
         # 타임스탬프를 사용하기 위해서 한번에 넣는것이 아닌 반복문을 사용하여 삽입
         foreach ($users as $user) {

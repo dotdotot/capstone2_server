@@ -5,13 +5,14 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Jenssegers\Mongodb\Eloquent\HybridRelations;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 use Illuminate\Support\Facades\Hash;
 
 /**
  * public @method departments()
  */
-class User extends BaseModel
+class User extends BaseModel implements JWTSubject
 {
     use HybridRelations;
     use SoftDeletes;
@@ -97,13 +98,8 @@ class User extends BaseModel
     }
 
     # 비밀번호 확인
-    public static function passwordDecode($userId, $password)
+    public static function passwordDecode($user, $password)
     {
-        $user = User::where('id', $userId)->first();
-        if($user === null || $user->isEmpty()) {
-            return false;
-        }
-
         if (Hash::check($password, $user->password)) {
             return true;
         } else {
@@ -111,5 +107,27 @@ class User extends BaseModel
             $user->save();
             return false;
         }
+    }
+
+    // Rest of your model code...
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }
