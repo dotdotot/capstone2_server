@@ -82,23 +82,24 @@ class MemberSeeder extends Seeder
         $comonLeaderMember->save();
 
         User::where('club_id', $club->id)
-                ->where('department_id', $department->id)
                 ->whereNotIn('rank_id', [1,2])
                 ->get()
-                ->each(function ($user) use ($club, $department) {
+                ->each(function ($user) use ($club) {
                     $member = new Member();
                     $member->club_id = $club->id;
-                    $member->department_id = $department->id;
                     $member->user_id = $user->id;
+                    $member->department_id = $user->department_id;
                     $member->rank_id = $user->rank_id;
-                    if($user->whereIn('name', ['이승주', '윤성직', '유성훈', '장우철', '이민형', '김수진', '노혜민', '황수진', '김준석', '서정찬', '홍민선'])->get()->isNotEmpty()) {
+                    if(in_array($user->name, ['이승주', '윤성직', '유성훈', '장우철', '이민형', '김수진', '노혜민', '황수진', '김준석', '서정찬', '홍민선'])) {
                         $member->team_id = Team::where('name', '컴온')->first()->id;
                         $member->position = Member::where('team_id', Team::where('name', '컴온')->first()->id)->count();
-                    } elseif($user->whereIn('name', ['한다영', '안노아', '서아영', '나승주', '김시연'])->get()->isNotEmpty()) {
+                    } elseif(in_array('name', ['한다영', '안노아', '서아영', '나승주', '김시연'])) {
                         $member->team_id = Team::where('name', '룩')->first()->id;
                         $member->position = Member::where('team_id', Team::where('name', '룩')->first()->id)->count();
                     } else {
-                        $member->team_id = null;
+                        $randomTeamId = Team::whereNotIn('name', ['C403','컴온','룩'])->inRandomOrder()->first()->id;
+                        $member->team_id = $randomTeamId;
+                        $member->position = Member::where('team_id', $randomTeamId)->count();
                     }
                     $member->default = true;
                     $member->leader = false;
