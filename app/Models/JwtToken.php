@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Jenssegers\Mongodb\Eloquent\HybridRelations;
 
+use Firebase\JWT\Key;
 use Firebase\JWT\JWT;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
@@ -31,13 +32,14 @@ class JwtToken extends BaseModel
     protected $table = 'jwt_token';
 
     protected $dates = [
+        'access_token_end_at', 'refresh_token_end_at', 'deleted_at'
     ];
 
     protected $casts = [
     ];
 
     protected $fillable = [
-        'club_id', 'user_id', 'access_token', 'refresh_token', 'created_at', 'updated_at', 'deleted_at'
+        'club_id', 'user_id', 'access_token', 'access_token_end_at', 'refresh_token', 'refresh_token_end_at', 'created_at', 'updated_at', 'deleted_at'
     ];
 
     protected $hidden = [
@@ -51,7 +53,9 @@ class JwtToken extends BaseModel
         $this->user_id = isset($attributes['user_id']) ? $attributes['user_id'] : null;
 
         $this->access_token = isset($attributes['access_token']) ? $attributes['access_token'] : null;
+        $this->access_token_end_at = isset($attributes['access_token_end_at']) ? $attributes['access_token_end_at'] : null;
         $this->refresh_token = isset($attributes['refresh_token']) ? $attributes['refresh_token'] : null;
+        $this->refresh_token_end_at = isset($attributes['refresh_token_end_at']) ? $attributes['refresh_token_end_at'] : null;
 
         // 삭제/추가/수정 시간
         $this->created_at = isset($attributes['created_at']) ? $attributes['created_at'] : Carbon::now();
@@ -60,71 +64,96 @@ class JwtToken extends BaseModel
     }
 
     # jwt 토큰 발행
-    public static function jwtToken($user)
+    public static function jwtToken($userId)
     {
         $issuedAt = time();
         $expiration = $issuedAt + config('jwt.ttl');
+        $key = config('jwt.secret');
 
         // Generate access token
         $accessTokenPayload = [
-            'user_id' => $user->id,
+            'user_id' => $userId,
             'exp' => $expiration,
         ];
         $accessToken = JWT::encode($accessTokenPayload, config('jwt.secret'), 'HS256');
+        $accessTokenEndAt = null;
+        try {
+            $accessTokenEndAt = JWT::decode($accessToken, new Key($key, 'HS256'));
+            $accessTokenEndAt = $accessTokenEndAt->exp;
+            $accessTokenEndAt = date('Y-m-d H:i:s', $accessTokenEndAt);
+        } catch(\Exception $e) {
+            return null;
+        }
 
         // Generate refresh token
         $refreshExpiration = $issuedAt + config('jwt.refresh_ttl');
         $refreshTokenPayload = [
-            'user_id' => $user->id,
+            'user_id' => $userId,
             'exp' => $refreshExpiration,
         ];
         $refreshToken = JWT::encode($refreshTokenPayload, config('jwt.secret'), 'HS256');
+        $refreshTokenEndAt = null;
+        try {
+            $refreshTokenEndAt = JWT::decode($refreshToken, new Key($key, 'HS256'));
+            $refreshTokenEndAt = $refreshTokenEndAt->exp;
+            $refreshTokenEndAt = date('Y-m-d H:i:s', $refreshTokenEndAt);
+        } catch(\Exception $e) {
+            return null;
+        }
 
         return [
-            'user_id' => $user->id,
+            'user_id' => $userId,
             'access_token' => $accessToken,
+            'access_token_end_at' => $accessTokenEndAt,
             'refresh_token' => $refreshToken,
+            'refresh_token_end_at' => $refreshTokenEndAt
         ];
     }
 
-    # jwt 검사
-    public static function jwtAccessCheckToken($userId, $access_token)
+    # jwt accessToken 검사
+    public static function jwtAccessCheckToken($userId)
     {
-        # 사용자 검사
-        $user = User::find($userId);
-        if ($user === null) {
+        # 토큰 유효성 검사
+        $token = JwtToken::where('user_id', $userId)->first();
+        if ($token->access_token_end_at->isPast()) {
             return null;
         }
 
-        try {
-            JWTAuth::setToken($access_token)->authenticate();
-        } catch (\Exception $e) {
-            return jwtToken($userId);
-        }
-
-        return $user;
+        return 'success';
     }
 
-    public static function jwtRefreshToken($refresh_token)
+    # 액세스 토큰 재발급, jwt refresh token 검사
+    public static function jwtRefreshToken($userId)
     {
-        $refreshTokenResponse = Http::asForm()->post(config('app.url') . '/oauth/token', [
-            'grant_type' => 'refresh_token',
-            'refresh_token' => $refresh_token,
-            'client_id' => config('passport.password_client_id'),
-            'client_secret' => config('passport.password_client_secret'),
-            'scope' => '',
-        ]);
-
-        if ($refreshTokenResponse->failed()) {
-            // Token refresh failed
+        # 토큰 유효성 검사
+        $refreshTokenEndAt = JwtToken::where('user_id', $userId)->value('refresh_token_end_at');
+        if ($refreshTokenEndAt->isPast()) {
             return null;
         }
 
-        $refreshedAccessTokenData = $refreshTokenResponse->json();
+        $issuedAt = time();
+        $expiration = $issuedAt + config('jwt.ttl');
+        $key = config('jwt.secret');
+
+        // Generate access token
+        $accessTokenPayload = [
+            'user_id' => $userId,
+            'exp' => $expiration,
+        ];
+        $accessToken = JWT::encode($accessTokenPayload, config('jwt.secret'), 'HS256');
+        $accessTokenEndAt = null;
+        try {
+            $accessTokenEndAt = JWT::decode($accessToken, new Key($key, 'HS256'));
+            $accessTokenEndAt = $accessTokenEndAt->exp;
+            $accessTokenEndAt = date('Y-m-d H:i:s', $accessTokenEndAt);
+        } catch(\Exception $e) {
+            return null;
+        }
 
         return [
-            'access_token' => $refreshedAccessTokenData['access_token'],
-            'refresh_token' => $refreshedAccessTokenData['refresh_token'],
+            'user_id' => $userId,
+            'access_token' => $accessToken,
+            'access_token_end_at' => $accessTokenEndAt
         ];
     }
 }

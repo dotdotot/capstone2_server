@@ -56,19 +56,47 @@ class TestCommand extends Command
      */
     public function handle()
     {
-        // $user = User::where('name', '김준석')->first();
+        $departments = Department::where('club_id', 12)->select(['name', 'code'])->get();
+
+        if($departments->isEmpty()) {
+            dd('zz');
+        }
+        dd($departments);
+        // dd($user->created_at);
+
+        // Carbon::parse($condition['repeat_end_date']->toDateTime())
+        //                                             ->setTimezone(env('APP_TIMEZONE', 'Asia/Seoul'))
+
         // $token = JwtToken::jwtToken($user);
+        // JwtToken::create([
+        //     'club_id' => $user->club_id,
+        //     'user_id' => $user->id,
+        //     'access_token' => $token['access_token'],
+        //     'access_token_end_at' => $token['access_token_end_at'],
+        //     'refresh_token' => $token['refresh_token'],
+        //     'refresh_token_end_at' => $token['refresh_token_end_at']
+        // ]);
         // dd($token);
-        $accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0LCJleHAiOjE2ODQ2NzMyNDh9.F3xCCn4k1vKG-UoOYltLC1RFnaedx91n2gkmjrBv5Ug";
+
+        $user = User::where('name', '김준석')->first();
+        $accessToken = JwtToken::where('user_id', $user->id)->value('access_token_end_at');
         $key = config('jwt.secret');
 
-        $decodedToken = JWT::decode($accessToken, new Key($key, 'HS256'));
-        $expirationTime = $decodedToken->exp;
+        if ($accessToken->isPast()) {
+            echo "The target time has already passed.";
+        } else {
+            echo "The target time has not yet passed.";
+        }
 
-        // Convert expiration time to a human-readable format
-        $expirationDateTime = date('Y-m-d H:i:s', $expirationTime);
+        dd(1);
 
-        dd("Access token expiration time: " . $expirationDateTime);
+        $a = null;
+        try {
+            $a = JWTAuth::setToken($accessToken)->authenticate();
+        } catch (\Exception $e) {
+            dd(1);
+        }
+        dd($a);
 
 
         $club = Club::where('name', 'C403')->first();

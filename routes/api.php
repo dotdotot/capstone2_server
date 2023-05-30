@@ -29,7 +29,12 @@ Route::group(
         # 비밀번호찾기 - api/passwordFind
         Route::get('passwordFind', [CommonUserController::class, 'passwordFind']);
         # 토큰 재발급 - api/refresh-token?user_id={user_id}
-        Route::get('refresh-token', [CommonUserController::class, 'refreshToken']);
+        Route::get('refreshToken', [CommonUserController::class, 'refreshToken']);
+
+        Route::prefix('club')->group(function () {
+            # 학과 조회 - api/club/departments?club_code={club_code}
+            Route::get('departments', [CommonUserController::class, 'departmentCode']);
+        });
     }
 );
 
@@ -38,7 +43,7 @@ Route::group(
     [
         'prefix' => 'clubs/{club_id}/users/{user_id}',
         'where' => [
-            'company_id' => '[0-9]+',
+            'club_id' => '[0-9]+',
             'user_id' => '[0-9]+',
         ],
     ],

@@ -6,7 +6,8 @@ return [
     'logout_or_long_term_inactivity' => '로그아웃 되었거나 장시간 사용하지 않아 연결이 종료되었습니다.',
     'does_not_exist' => [
         'club_id' => '존재하지 않는 동아리아이디입니다.',
-        'company' => '존재하지 않는 동아리입니다.',
+        'club_code' => '존재하지 않는 동아리입니다.',
+        'department' => '동아리에 학과가 존재하지 않습니다',
         'uploaded_file' => '업로드 파일이 존재하지 않습니다.',
         'message' => '존재하지 않는 메시지입니다.',
         'user' => '존재하지 않는 사용자입니다.',

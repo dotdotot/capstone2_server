@@ -34,7 +34,7 @@ class UserController extends Controller
     public function login(Request $request)
     {
         # url에서 아이디, 비밀번호 추출
-        $id = $request->get('id');
+        $id = intval($request->get('id'));
         $password = $request->get('password');
 
         # 사용자 확인
@@ -58,46 +58,136 @@ class UserController extends Controller
         # 사용자 최근 접속시간 갱신
         $user->last_login_at = now();
 
-        # 토큰 발급
+        # 토큰 존재확인
         $jwtToken = JwtToken::where('user_id', $user->id)->first();
         if($jwtToken === null) {
             # 토큰 자체가 없는 사용자 토큰 발급
-            $token = JwtToken::jwtToken($user);
+            $token = JwtToken::jwtToken($user->id);
 
             $jwtToken = new JwtToken();
             $jwtToken->club_id = $user->club_id;
             $jwtToken->user_id = $token['user_id'];
             $jwtToken->access_token = $token['access_token'];
+            $jwtToken->access_token_end_at = $token['access_token_end_at'];
             $jwtToken->refresh_token = $token['refresh_token'];
-        } elseif(JwtToken::jwtRefreshToken($jwtToken->refresh_token) === null) {
-            # 토큰이 존재하나 refresh_token이 만료된 사용자 토큰 재발급
-            $token = JwtToken::jwtToken($user);
-
-            $jwtToken->access_token = $token['access_token'];
-            $jwtToken->refresh_token = $token['refresh_token'];
+            $jwtToken->refresh_token_end_at = $token['refresh_token_end_at'];
         } else {
-            # 액세스 토큰 발급
-            $jwtToken->access_token = JwtToken::jwtRefreshToken($jwtToken->refresh_token);
-        }
-        $jwtToken->save();
+            # 토큰이 존재하는 사용자
 
-        dd($jwtToken);
+            # 액세스 토큰이 만료된 사용자
+            if(JwtToken::jwtAccessCheckToken($user->id) === null) {
+                $token = JwtToken::jwtRefreshToken($user->id);
+
+                # 재사용 토큰도 만료
+                if($token === null) {
+                    $token = JwtToken::jwtToken($user->id);
+                    $jwtToken->access_token = $token['access_token'];
+                    $jwtToken->access_token_end_at = $token['access_token_end_at'];
+                    $jwtToken->refresh_token = $token['refresh_token'];
+                    $jwtToken->refresh_token_end_at = $token['refresh_token_end_at'];
+                } else {
+                    # 액세스 토큰 재발급
+                    $jwtToken->access_token = $token['access_token'];
+                    $jwtToken->access_token_end_at = $token['access_token_end_at'];
+                }
+            }
+        }
+        JwtToken::updateOrCreate([
+            'club_id' => $user->club_id,
+            'user_id' => $user->id,
+        ], [
+            'access_token' => $jwtToken->access_token,
+            'access_token_end_at' => $jwtToken->access_token_end_at,
+            'refresh_token' => $jwtToken->refresh_token,
+            'refresh_token_end_at' => $jwtToken->refresh_token_end_at,
+        ]);
+
+        # 데이터 정제
+        $data = [
+            'club_id' => $user->club_id,
+            'user_id' => $user->id,
+            'access_token' => $jwtToken->access_token,
+            'access_token_end_at' => $jwtToken->access_token_end_at,
+        ];
+
+        return $data;
     }
 
     // joinMembership(Request $request) :: 사용자 회원가입
     public function joinMembership(Request $request)
     {
         $this->validate($request, [
-            'user_id' => 'nullable|integer|min:1',
+            'club_code' => 'required|integer|min:1|max:9999',
+            'department_code' => 'required|integer|min:1|max:9999',
+            'student_id' => 'required|integer|regex:/^\d{7}$/',
+            'name' => 'nullable|string|max:255',
+            'gender' => 'nullable|string|max:50',
+            'phone' => 'nullable|array',
+            'email' => 'required|string|regex:/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i',
+            'address' => 'nullable|string|max:255',
+            'birthday' => 'required|string|regex:/^(\d{4})-?(\d{2})-?(\d{2})$/',
         ], [
+            'clud_code.*' => __('validations.club_code'),
+            'department_code.*' => __('validations.department_code'),
+            'student_id.*' => __('validations.student_id'),
+            'name.*' => __('validations.name'),
+            'gender.*' => __('validations.gender'),
+            'phone.*' => __('validations.phone'),
+            'email.*' => __('validations.email'),
+            'address.*' => __('validations.address'),
+            'birthday.*' => __('validations.birthday'),
             '*' => __('validations.format')
         ]);
 
-        $club = $request->get('club_id');
-        $user = $request->get('user_id');
+        $club_code = intval($request->input('club_code'));
+        $department_code = intval($request->input('department_code'));
+        $student_id = intval($request->input('student_id'));
+        $name = $request->input('name');
+        $gender = $request->input('gender');
+        $phone = $request->input('phone');
+        $email = $request->input('email');
+        $address = $request->input('address');
+        $birthday = $request->input('birthday');
 
-        $lastTimestampMs = $request->input('last_timestamp_ms') === null ? null : intval($request->input('last_timestamp_ms'));
+        # 클럽 조회
+        $club = Club::where('code', $club_code)->first();
+        # 학과 조회
+        $department = Department::where('code', $department_code)->first();
+
+
+
+        return [
+            'club_code' => $club_code,
+            'department_code' => $department_code,
+            'student_id' => $student_id,
+            'name' => $name,
+            'gender' => $gender,
+            'phone' => $phone,
+            'email' => $email,
+            'address' => $address,
+            'birthday' => $birthday
+        ];
     }
+
+    // departmentCode(Request $request) :: 학과 조회
+    public function departmentCode(Request $request)
+    {
+
+        $clubCode = $request->get('club_code');
+
+        $club = Club::where('code', $clubCode)->first();
+        if($club === null) {
+            abort(403, __('aborts.does_not_exist.club_code'));
+        }
+
+        $departments = Department::where('club_id', $club->id)->select(['name', 'code'])->get();
+        if($departments->isEmpty()) {
+            abort(403, __('aborts.does_not_exist.department'));
+        }
+
+        return $departments;
+    }
+
 
     // idFind(Request $request) :: 사용자 아이디 찾기
     public function idFind(Request $request)

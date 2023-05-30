@@ -20,6 +20,7 @@ class Rank extends BaseModel
     protected $table = 'ranks';
 
     protected $dates = [
+        'deleted_at'
     ];
 
     protected $casts = [

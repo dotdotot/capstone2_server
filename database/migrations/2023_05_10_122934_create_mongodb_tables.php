@@ -53,5 +53,7 @@ return new class () extends Migration {
     public function down()
     {
         Schema::connection($this->mongoConnection)->dropIfExists('user_login');
+        Schema::connection($this->mongoConnection)->dropIfExists('cctv_consents');
+        Schema::connection($this->mongoConnection)->dropIfExists('project_consents');
     }
 };

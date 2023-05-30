@@ -248,7 +248,9 @@ return new class () extends Migration {
             $table->unsignedBigInteger('club_id')->comment('동아리번호');
             $table->unsignedBigInteger('user_id')->comment('랭크번호');
             $table->string('access_token', 500)->nullable()->comment('액세스토큰');
+            $table->timestampTz('access_token_end_at')->nullable()->comment('액세스토큰 만료 일시');
             $table->string('refresh_token', 500)->nullable()->comment('재발급토큰');
+            $table->timestampTz('refresh_token_end_at')->nullable()->comment('재발급토큰 만료 일시');
             $table->timestampsTz($precision = 3);
             $table->softDeletesTz($column = 'deleted_at', $precision = 3);
 

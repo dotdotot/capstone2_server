@@ -71,6 +71,7 @@ return [
             'database' => env('DB_DATABASE', 'capstone_pgsql'),
             'username' => env('DB_USERNAME', 'capstone_p'),
             'password' => env('DB_PASSWORD', 'capstone_p'),
+            'timezone' => 'UTC', // Set the timezone to UTC
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,

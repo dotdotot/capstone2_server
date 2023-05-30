@@ -1,5 +1,7 @@
 FROM php:8.2-fpm
 
+ENV TZ=UTC
+
 RUN apt-get update
 
 # Install MongoDB extension
