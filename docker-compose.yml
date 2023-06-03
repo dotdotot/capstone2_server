@@ -154,6 +154,8 @@ services:
             - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
         networks:
             - sail
+        depends_on:
+            - laravel.test
     selenium:
         image: seleniarm/standalone-chromium
         extra_hosts:
