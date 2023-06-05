@@ -30,7 +30,7 @@ services:
             - meilisearch
             - minio
             - selenium
-            - mongodb
+            # - mongodb
 
     postgres:
         image: postgres:15
@@ -53,19 +53,19 @@ services:
             - 5434:5432
         networks:
             - sail
-    mongodb:
-        image: mongo
-        restart: always
-        environment:
-            MONGO_INITDB_DATABASE: ${DB_MONGO_DATABASE}
-            MONGO_INITDB_ROOT_USERNAME: ${DB_MONGO_USERNAME}
-            MONGO_INITDB_ROOT_PASSWORD: ${DB_MONGO_PASSWORD}
-        ports:
-            - "27017:27017"
-        volumes:
-            - sail-mongodb:/data/db
-        networks:
-            - sail
+    # mongodb:
+    #     image: mongo
+    #     restart: always
+    #     environment:
+    #         MONGO_INITDB_DATABASE: ${DB_MONGO_DATABASE}
+    #         MONGO_INITDB_ROOT_USERNAME: ${DB_MONGO_USERNAME}
+    #         MONGO_INITDB_ROOT_PASSWORD: ${DB_MONGO_PASSWORD}
+    #     ports:
+    #         - "27017:27017"
+    #     volumes:
+    #         - sail-mongodb:/data/db
+    #     networks:
+    #         - sail
     redis:
         image: 'redis:alpine'
         ports:
@@ -178,5 +178,5 @@ volumes:
         driver: local
     sail-minio:
         driver: local
-    sail-mongodb:
-        driver: local
+    # sail-mongodb:
+    #     driver: local

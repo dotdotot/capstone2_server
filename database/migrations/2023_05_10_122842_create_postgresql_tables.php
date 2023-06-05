@@ -246,7 +246,7 @@ return new class () extends Migration {
         Schema::create('jwt_token', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('club_id')->comment('동아리번호');
-            $table->unsignedBigInteger('user_id')->comment('랭크번호');
+            $table->unsignedBigInteger('user_id')->comment('사용자아이디');
             $table->string('access_token', 500)->nullable()->comment('액세스토큰');
             $table->timestampTz('access_token_end_at')->nullable()->comment('액세스토큰 만료 일시');
             $table->string('refresh_token', 500)->nullable()->comment('재발급토큰');
@@ -256,6 +256,64 @@ return new class () extends Migration {
 
             // 유니크
             $table->unique(['club_id', 'user_id']);
+
+            // 인덱스
+            $table->index('club_id');
+            $table->index('user_id');
+            $table->index('deleted_at');
+
+            // 키 값
+            $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+        });
+
+        # access_tokens table
+        Schema::create('user_login', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('club_id')->comment('동아리번호');
+            $table->unsignedBigInteger('user_id')->comment('사용자아이디');
+            $table->string('ip', 100)->nullable()->comment('접속 ip');
+            $table->string('etc', 100)->nullable()->comment('기타');
+            $table->timestampsTz($precision = 3);
+            $table->softDeletesTz($column = 'deleted_at', $precision = 3);
+
+            // 인덱스
+            $table->index('club_id');
+            $table->index('user_id');
+            $table->index('deleted_at');
+
+            // 키 값
+            $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+        });
+
+        # access_tokens table
+        Schema::create('project_consents', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('club_id')->comment('동아리번호');
+            $table->unsignedBigInteger('user_id')->comment('랭크번호');
+            $table->string('consent', 500)->nullable()->comment('여부');
+            $table->timestampsTz($precision = 3);
+            $table->softDeletesTz($column = 'deleted_at', $precision = 3);
+
+            // 인덱스
+            $table->index('club_id');
+            $table->index('user_id');
+            $table->index('deleted_at');
+
+            // 키 값
+            $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+        });
+
+        # access_tokens table
+        Schema::create('cctv_consents', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('club_id')->comment('동아리번호');
+            $table->unsignedBigInteger('user_id')->comment('랭크번호');
+            $table->string('consent', 500)->nullable()->comment('여부');
+            $table->timestampsTz($precision = 3);
+            $table->softDeletesTz($column = 'deleted_at', $precision = 3);
 
             // 인덱스
             $table->index('club_id');
@@ -276,6 +334,9 @@ return new class () extends Migration {
     public function down()
     {
         # 테이블 삭제
+        Schema::dropIfExists('cctv_consents');
+        Schema::dropIfExists('project_consents');
+        Schema::dropIfExists('user_login');
         Schema::dropIfExists('jwt_token');
         Schema::dropIfExists('rank_permissions');
         Schema::dropIfExists('members');

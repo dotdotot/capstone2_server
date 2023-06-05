@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use DateTimeInterface;
 use Jenssegers\Mongodb\Eloquent\Model;
+use MongoDB\BSON\Binary;
+use MongoDB\BSON\ObjectID;
 
 class BaseMongoModel extends Model
 {

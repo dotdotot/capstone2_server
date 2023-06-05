@@ -33,7 +33,6 @@ class DatabaseSeeder extends Seeder
             # 랭크 권한 생성
             $this->call(RankPermissionSeeder::class);
 
-            # mongo table created
             # 사용자 접속 ip 생성
             $this->call(UserLoginSeeder::class);
             # cctv 동의여부 생성

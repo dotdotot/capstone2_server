@@ -5,17 +5,17 @@ namespace App\Models;
 use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 
-class CCTVConsent extends BaseMongoModel
+class CCTVConsent extends BaseModel
 {
     use SoftDeletes;
 
-    protected $connection = 'mongodb';
+    protected $connection = 'pgsql';
     protected $table = 'cctv_consents';
 
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'club_id', 'user_id', 'consent'
+        'club_id', 'user_id', 'consent', 'created_at', 'updated_at', 'deleted_at'
     ];
 
     public function __construct(array $attributes = array())

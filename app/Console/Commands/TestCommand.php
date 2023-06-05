@@ -56,6 +56,8 @@ class TestCommand extends Command
      */
     public function handle()
     {
+        $a = UserLogin::where('user_id', 33)->first();
+        dd($a);
         $departments = Department::where('club_id', 12)->select(['name', 'code'])->get();
 
         if($departments->isEmpty()) {

@@ -2,20 +2,22 @@
 
 namespace App\Models;
 
-use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Jenssegers\Mongodb\Eloquent\HybridRelations;
 
-class ProjectConsent extends BaseMongoModel
+class ProjectConsent extends BaseModel
 {
+    use HybridRelations;
     use SoftDeletes;
 
-    protected $connection = 'mongodb';
+    protected $connection = 'pgsql';
     protected $table = 'project_consents';
 
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'club_id', 'user_id', 'consent'
+        'club_id', 'user_id', 'consent', 'created_at', 'updated_at', 'deleted_at'
     ];
 
     public function __construct(array $attributes = array())

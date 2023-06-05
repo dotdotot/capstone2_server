@@ -2,20 +2,22 @@
 
 namespace App\Models;
 
-use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Jenssegers\Mongodb\Eloquent\HybridRelations;
 
-class UserLogin extends BaseMongoModel
+class UserLogin extends BaseModel
 {
+    use HybridRelations;
     use SoftDeletes;
 
-    protected $connection = 'mongodb';
+    protected $connection = 'pgsql';
     protected $table = 'user_login';
 
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'club_id', 'user_id', 'ip', 'etc'
+        'club_id', 'user_id', 'ip', 'etc', 'created_at', 'updated_at', 'deleted_at'
     ];
 
     public function __construct(array $attributes = array())

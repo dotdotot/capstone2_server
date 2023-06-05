@@ -79,23 +79,23 @@ return [
             'sslmode' => 'prefer',
         ],
 
-        'mongodb' => [
-            'driver' => 'mongodb',
-            'host' => env('DB_MONGO_HOST', '127.0.0.1'),
-            'port' => env('DB_MONGO_PORT', 27017),
-            'database' => env('DB_MONGO_DATABASE'),
-            'username' => env('DB_MONGO_USERNAME'),
-            'password' => env('DB_MONGO_PASSWORD'),
-            'options' => [
-                // here you can pass more settings to the Mongo Driver Manager
-                // see https://www.php.net/manual/en/mongodb-driver-manager.construct.php under "Uri Options" for a list of complete parameters that you can use
-                'database' => env('DB_MONGO_DATABASE', 'admin'), // required with Mongo 3+
-                // 'replicaSet' => 'rs0',
-                // 'readPreference' => 'secondaryPreferred',
-                'retryWrites' => false,
-                'readPreference' => 'primary',
-            ],
-        ],
+        // 'mongodb' => [
+        //     'driver' => 'mongodb',
+        //     'host' => env('DB_MONGO_HOST', '127.0.0.1'),
+        //     'port' => env('DB_MONGO_PORT', 27017),
+        //     'database' => env('DB_MONGO_DATABASE'),
+        //     'username' => env('DB_MONGO_USERNAME'),
+        //     'password' => env('DB_MONGO_PASSWORD'),
+        //     'options' => [
+        //         // here you can pass more settings to the Mongo Driver Manager
+        //         // see https://www.php.net/manual/en/mongodb-driver-manager.construct.php under "Uri Options" for a list of complete parameters that you can use
+        //         'database' => env('DB_MONGO_DATABASE', 'admin'), // required with Mongo 3+
+        //         // 'replicaSet' => 'rs0',
+        //         // 'readPreference' => 'secondaryPreferred',
+        //         'retryWrites' => false,
+        //         'readPreference' => 'primary',
+        //     ],
+        // ],
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
