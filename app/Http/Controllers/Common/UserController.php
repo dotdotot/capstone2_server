@@ -49,8 +49,6 @@ class UserController extends Controller
         }
 
         # 사용자 접속 ip 추가
-        $userLogin = new UserLogin();
-        return 'zzzz';
         UserLogin::create([
             'club_id' => $user->club_id,
             'user_id' => $user->id,

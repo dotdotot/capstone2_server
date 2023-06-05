@@ -71,3 +71,4 @@
 172.28.0.1 - - [05/Jun/2023:05:09:16 +0000] "GET /api/login?id=1761013&password=1761013@pcu.ac.kr HTTP/1.1" 500 168 "-" "PostmanRuntime/7.32.2"
 172.28.0.1 - - [05/Jun/2023:05:21:10 +0000] "GET /api/login?id=1761013&password=1761013@pcu.ac.kr HTTP/1.1" 500 168 "-" "PostmanRuntime/7.32.2"
 172.28.0.1 - - [05/Jun/2023:05:21:12 +0000] "GET /api/login?id=1761013&password=1761013@pcu.ac.kr HTTP/1.1" 500 168 "-" "PostmanRuntime/7.32.2"
+172.30.0.1 - - [05/Jun/2023:06:29:13 +0000] "POST /api/joinMembership HTTP/1.1" 200 247 "-" "PostmanRuntime/7.32.2"
