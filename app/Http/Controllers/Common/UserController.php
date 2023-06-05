@@ -151,22 +151,35 @@ class UserController extends Controller
 
         # 클럽 조회
         $club = Club::where('code', $club_code)->first();
+        if($club === null) {
+            return abort(403, __('aborts.does_not_exist.club_code'));
+        }
+
         # 학과 조회
         $department = Department::where('code', $department_code)->first();
+        if($department === null) {
+            return abort(403, __('aborts.does_not_exist.department'));
+        }
 
-
-
-        return [
-            'club_code' => $club_code,
-            'department_code' => $department_code,
+        # 사용자 생성
+        User::create([
+            'club_id' => $club->id,
+            'department_id' => $department->id,
+            'rank_id' => 3,
             'student_id' => $student_id,
             'name' => $name,
             'gender' => $gender,
             'phone' => $phone,
             'email' => $email,
             'address' => $address,
-            'birthday' => $birthday
-        ];
+            'birth_date' => $birthday,
+            'password' => User::passwordEncode($email)
+        ]);
+
+
+        return response()->json([
+            'result' => 'success'
+        ], 201);
     }
 
     // departmentCode(Request $request) :: 학과 조회

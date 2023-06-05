@@ -28,8 +28,8 @@ Route::group(
         Route::get('idFind', [CommonUserController::class, 'idFind']);
         # 비밀번호찾기 - api/passwordFind
         Route::get('passwordFind', [CommonUserController::class, 'passwordFind']);
-        # 토큰 재발급 - api/refresh-token?user_id={user_id}
-        Route::get('refreshToken', [CommonUserController::class, 'refreshToken']);
+        # 토큰 재발급 - api/token?user_id={user_id}
+        Route::get('token', [CommonUserController::class, 'token']);
 
         Route::prefix('club')->group(function () {
             # 학과 조회 - api/club/departments?club_code={club_code}
