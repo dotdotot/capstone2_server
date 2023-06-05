@@ -53,10 +53,7 @@ class UserSeeder extends Seeder
                     '010-4043-0557'
                 ],
                 'email' => '2161045@pcu.ac.kr',
-                'password' =>
-                    User::passwordEncode('2161045@pcu.ac.kr') !== null
-                        ? User::passwordEncode('2161045@pcu.ac.kr')
-                        : Hash::make('2161045@pcu.ac.kr'),
+                'password' => '2161045@pcu.ac.kr',
                 'address' => '대전 서구',
                 'birth_date' => '1997-05-20',
             ],
@@ -76,10 +73,7 @@ class UserSeeder extends Seeder
                     '010-5670-9325'
                 ],
                 'email' => '1961049@pcu.ac.kr',
-                'password' =>
-                    User::passwordEncode('1961049@pcu.ac.kr') !== null
-                        ? User::passwordEncode('1961049@pcu.ac.kr')
-                        : Hash::make('1961049@pcu.ac.kr'),
+                'password' => '1961049@pcu.ac.kr',
                 'address' => '대전 서구',
                 'birth_date' => '2000-03-29',
             ],
@@ -99,10 +93,7 @@ class UserSeeder extends Seeder
                     '010-8819-4406'
                 ],
                 'email' => '2161073@pcu.ac.kr',
-                'password' =>
-                    User::passwordEncode('2161073@pcu.ac.kr') !== null
-                        ? User::passwordEncode('2161073@pcu.ac.kr')
-                        : Hash::make('2161073@pcu.ac.kr'),
+                'password' => '2161073@pcu.ac.kr',
                 'address' => '서울특별시 양천구',
                 'birth_date' => '2002-02-17',
             ],
@@ -117,10 +108,7 @@ class UserSeeder extends Seeder
                     '010-9206-9486'
                 ],
                 'email' => '1761013@pcu.ac.kr',
-                'password' =>
-                    User::passwordEncode('1761013@pcu.ac.kr') !== null
-                        ? User::passwordEncode('1761013@pcu.ac.kr')
-                        : Hash::make('1761013@pcu.ac.kr'),
+                'password' => '1761013@pcu.ac.kr',
                 'address' => '대전 서구',
                 'birth_date' => '1998-03-08',
             ],
@@ -135,10 +123,7 @@ class UserSeeder extends Seeder
                     '010-2778-7431'
                 ],
                 'email' => 'mi75265@gmail.com',
-                'password' =>
-                    User::passwordEncode('mi75265@gmail.com') !== null
-                        ? User::passwordEncode('mi75265@gmail.com')
-                        : Hash::make('mi75265@gmail.com'),
+                'password' => 'mi75265@gmail.com',
                 'address' => '대전 중구',
                 'birth_date' => '2001-11-14',
             ],
@@ -153,10 +138,7 @@ class UserSeeder extends Seeder
                     '010-7527-4800'
                 ],
                 'email' => '2161057@pcu.ac.kr',
-                'password' =>
-                    User::passwordEncode('2161057@pcu.ac.kr') !== null
-                        ? User::passwordEncode('2161057@pcu.ac.kr')
-                        : Hash::make('2161057@pcu.ac.kr'),
+                'password' => '2161057@pcu.ac.kr',
                 'address' => '대전 서구',
                 'birth_date' => '2002-06-18',
             ],
@@ -171,10 +153,7 @@ class UserSeeder extends Seeder
                     '010-1234-1234'
                 ],
                 'email' => '1761034@pcu.ac.kr',
-                'password' =>
-                    User::passwordEncode('1761034@pcu.ac.kr') !== null
-                        ? User::passwordEncode('1761034@pcu.ac.kr')
-                        : Hash::make('1761034@pcu.ac.kr'),
+                'password' => '1761034@pcu.ac.kr',
                 'address' => '대전 중구',
                 'birth_date' => '1998-03-05',
             ],
@@ -189,10 +168,7 @@ class UserSeeder extends Seeder
                     '010-2510-4453'
                 ],
                 'email' => '2161086@pcu.ac.kr',
-                'password' =>
-                    User::passwordEncode('2161086@pcu.ac.kr') !== null
-                        ? User::passwordEncode('2161086@pcu.ac.kr')
-                        : Hash::make('2161086@pcu.ac.kr'),
+                'password' => '2161086@pcu.ac.kr',
                 'address' => '대전 서구',
                 'birth_date' => '2002-02-23',
             ],
@@ -212,10 +188,7 @@ class UserSeeder extends Seeder
                     $faker->numerify('010-####-####')
                 ],
                 'email' => $randomEmail,
-                'password' =>
-                    User::passwordEncode($randomEmail) !== null
-                        ? User::passwordEncode($randomEmail)
-                        : Hash::make($randomEmail),
+                'password' => $randomEmail,
                 'address' => $faker->address,
                 'birth_date' => $faker->date($format = 'Y-m-d', $max = 'now'),
             ]);

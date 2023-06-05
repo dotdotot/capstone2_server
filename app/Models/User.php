@@ -86,28 +86,28 @@ class User extends BaseModel implements JWTSubject
         return $this->hasOne(Rank::class);
     }
 
-    # 비밀번호 암호화
-    public static function passwordEncode($password)
-    {
-        if ($password === null) {
-            return false;
-        }
+    // # 비밀번호 암호화
+    // public static function passwordEncode($password)
+    // {
+    //     if ($password === null) {
+    //         return false;
+    //     }
 
-        $hashPassword = Hash::make($password);
-        return $hashPassword;
-    }
+    //     $hashPassword = Hash::make($password);
+    //     return $hashPassword;
+    // }
 
-    # 비밀번호 확인
-    public static function passwordDecode($user, $password)
-    {
-        if (Hash::check($password, $user->password)) {
-            return true;
-        } else {
-            $user->password_fail_count += 1;
-            $user->save();
-            return false;
-        }
-    }
+    // # 비밀번호 확인
+    // public static function passwordDecode($user, $password)
+    // {
+    //     if (Hash::check($password, $user->password)) {
+    //         return true;
+    //     } else {
+    //         $user->password_fail_count += 1;
+    //         $user->save();
+    //         return false;
+    //     }
+    // }
 
     // Rest of your model code...
 
