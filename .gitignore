@@ -7,6 +7,7 @@
 *.crt
 *.csr
 *.key
+*.log
 .env
 .env.backup
 .env.production
@@ -19,6 +20,7 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+docker/logs/nginx/laravel_access.log
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
