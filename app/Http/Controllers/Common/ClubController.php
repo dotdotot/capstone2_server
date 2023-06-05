@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Common;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 
+use App\Http\Controllers\Controller;
 use App\Models\Club;
 use App\Models\Department;
 use App\Models\JwtToken;

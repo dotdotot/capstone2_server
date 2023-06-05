@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Common;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
@@ -17,7 +17,7 @@ use App\Models\TeamClosure;
 use App\Models\User;
 use App\Models\UserLogin;
 
-class RankController extends Controller
+class ClubController extends Controller
 {
     public function __construct(public Client $client)
     {
