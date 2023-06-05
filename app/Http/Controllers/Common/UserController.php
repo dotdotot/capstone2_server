@@ -44,7 +44,7 @@ class UserController extends Controller
         }
 
         # 비밀번호 확인
-        if(!User::passwordDecode($user, $password)) {
+        if(!$user->password === $password) {
             return abort(403, __('aborts.does_not_match.password'));
         }
 
@@ -173,7 +173,7 @@ class UserController extends Controller
             'email' => $email,
             'address' => $address,
             'birth_date' => $birthday,
-            'password' => User::passwordEncode($email)
+            'password' => $email
         ]);
 
 
@@ -205,19 +205,122 @@ class UserController extends Controller
     // idFind(Request $request) :: 사용자 아이디 찾기
     public function idFind(Request $request)
     {
-        $type = $request->input('type');
-        if ($type === null) {
+        $club_code = intval($request->input('club_code'));
+        $name = $request->input('name');
+        $email = $request->input('email');
+        if ($club_code === null || $name === null || $email === null) {
             abort(403, __('aborts.request'));
         }
-    }
 
-    // refreshtoken(Request $request) :: 토큰 재발급
-    public function refreshtoken(Request $request)
-    {
+        # 클럽 조회
+        $club = Club::where('code', $club_code)->first();
+        if($club === null) {
+            abort(403, __('aborts.does_not_exist.club_code'));
+        }
+
+        # 사용자 조회
+        $user = User::where('name', $name)
+                            ->where('email', $email)
+                            ->first();
+        if($user === null) {
+            abort(403, __('aborts.does_not_exist.user'));
+        }
+
+        return [
+            'user_id' => $user->id,
+            'student_id' => $user->student_id
+        ];
     }
 
     // passwordFind(Request $request) :: 사용자 비밀번호 찾기
     public function passwordFind(Request $request)
     {
+        $club_code = intval($request->input('club_code'));
+        $name = $request->input('name');
+        $student_id = intval($request->input('student_id'));
+        if ($club_code === null || $name === null || $student_id === null) {
+            abort(403, __('aborts.request'));
+        }
+
+        # 클럽 조회
+        $club = Club::where('code', $club_code)->first();
+        if($club === null) {
+            abort(403, __('aborts.does_not_exist.club_code'));
+        }
+
+        # 사용자 조회
+        $user = User::where('name', $name)
+                            ->where('student_id', $student_id)
+                            ->first();
+        if($user === null) {
+            abort(403, __('aborts.does_not_exist.user'));
+        }
+
+        return [
+            'user_id' => $user->id,
+            'student_id' => $user->student_id,
+            'password' => $user->password
+        ];
+    }
+
+    // refreshtoken(Request $request) :: 토큰 재발급
+    public function token(Request $request)
+    {
+        $club_code = intval($request->input('club_code'));
+        $user_id = intval($request->input('user_id'));
+
+        # 클럽 조회
+        $club = Club::where('code', $club_code)->first();
+        if($club === null) {
+            abort(403, __('aborts.does_not_exist.club_code'));
+        }
+
+        # 사용자 조회
+        $user = User::where('id', $user_id)->first();
+        if($user === null) {
+            abort(403, __('aborts.does_not_exist.user'));
+        }
+
+        # 토큰 존재확인
+        $jwtToken = JwtToken::where('user_id', $user->id)->first();
+        if($jwtToken === null) {
+            # 토큰 자체가 없는 사용자 토큰 발급
+            $token = JwtToken::jwtToken($user->id);
+
+            $jwtToken = new JwtToken();
+            $jwtToken->club_id = $user->club_id;
+            $jwtToken->user_id = $token['user_id'];
+            $jwtToken->access_token = $token['access_token'];
+            $jwtToken->access_token_end_at = $token['access_token_end_at'];
+            $jwtToken->refresh_token = $token['refresh_token'];
+            $jwtToken->refresh_token_end_at = $token['refresh_token_end_at'];
+        } else {
+            # 토큰이 존재하는 사용자
+
+            # 액세스 토큰이 만료된 사용자
+            if(JwtToken::jwtAccessCheckToken($user->id) === null) {
+                $token = JwtToken::jwtRefreshToken($user->id);
+
+                # 재사용 토큰도 만료
+                if($token === null) {
+                    $token = JwtToken::jwtToken($user->id);
+                    $jwtToken->access_token = $token['access_token'];
+                    $jwtToken->access_token_end_at = $token['access_token_end_at'];
+                    $jwtToken->refresh_token = $token['refresh_token'];
+                    $jwtToken->refresh_token_end_at = $token['refresh_token_end_at'];
+                } else {
+                    # 액세스 토큰 재발급
+                    $jwtToken->access_token = $token['access_token'];
+                    $jwtToken->access_token_end_at = $token['access_token_end_at'];
+                }
+            }
+        }
+
+        return [
+            "club_id" => $club->id,
+            "user_id" => $user->id,
+            "access_token" => $jwtToken->access_token,
+            "access_token_end_at" => $jwtToken->access_token_end_at,
+        ];
     }
 }

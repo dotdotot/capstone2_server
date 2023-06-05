@@ -24,11 +24,11 @@ Route::group(
         Route::get('login', [CommonUserController::class, 'login']);
         # 회원가입 - api/joinMembership
         Route::post('joinMembership', [CommonUserController::class, 'joinMembership']);
-        # 아이디찾기 - api/idFind
+        # 아이디찾기 - api/idFind?club_code={club_code}&name={name}&email={email}
         Route::get('idFind', [CommonUserController::class, 'idFind']);
-        # 비밀번호찾기 - api/passwordFind
+        # 비밀번호찾기 - api/passwordFind?club_code={club_code}&name={name}&student_id={student_id}
         Route::get('passwordFind', [CommonUserController::class, 'passwordFind']);
-        # 토큰 재발급 - api/token?user_id={user_id}
+        # 토큰 재발급 - api/token?club_code={club_code}&user_id={user_id}
         Route::get('token', [CommonUserController::class, 'token']);
 
         Route::prefix('club')->group(function () {
