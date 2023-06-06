@@ -18,16 +18,25 @@ use App\Models\User;
 use App\Models\UserLogin;
 
 /**
- * public @method login(Request $request) :: 사용자 로그인
- * public @method joinMembership(Request $request) :: 사용자 회원가입
- * public @method idFind(Request $request) :: 사용자 아이디 찾기
- * public @method passwordFind(Request $request) :: 사용자 비밀번호 찾기
- * public @method refreshtoken(Request $request) :: 토큰 재발급
+ * public @method loginInfomation(Request $request) :: 로그인 정보 반환
+ * public @method recentBirthday(Request $request) :: 최근 생일 반환
  */
 class UserController extends Controller
 {
     public function __construct(public Client $client)
     {
         $this->client = $client;
+    }
+
+    # 로그인 정보 반환
+    public function loginInfomation(Request $request)
+    {
+        #   접속 기기 알아내기
+        dd($request->header('User-Agent'));
+    }
+
+    # 최근 생일 반환
+    public function recentBirthday(Request $request)
+    {
     }
 }

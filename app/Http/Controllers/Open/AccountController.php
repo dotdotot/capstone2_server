@@ -34,7 +34,6 @@ class AccountController extends Controller
     // login(Request $request) :: 사용자 로그인
     public function login(Request $request)
     {
-        dd($request->header('User-Agent'));
         # url에서 아이디, 비밀번호 추출
         $id = intval($request->get('id'));
         $password = $request->get('password');

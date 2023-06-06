@@ -33,6 +33,19 @@ class UserLoginSeeder extends Seeder
             $userLogin->club_id = $club->id;
             $userLogin->user_id = $user->id;
             $userLogin->ip = $faker->ipv4;
+
+            $random_number = rand(0, 4);
+            if($random_number === 0) {
+                $userLogin->device = 'windows';
+            } elseif($random_number === 1) {
+                $userLogin->device = 'macos';
+            } elseif($random_number === 2) {
+                $userLogin->device = 'android';
+            } elseif($random_number === 3) {
+                $userLogin->device = 'tab';
+            } else {
+                $userLogin->device = 'test';
+            }
             $userLogin->save();
 
             $user->last_login_at = now();

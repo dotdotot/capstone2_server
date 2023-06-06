@@ -17,7 +17,7 @@ class UserLogin extends BaseModel
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'club_id', 'user_id', 'ip', 'etc', 'created_at', 'updated_at', 'deleted_at'
+        'club_id', 'user_id', 'ip', 'device', 'etc', 'created_at', 'updated_at', 'deleted_at'
     ];
 
     public function __construct(array $attributes = array())
@@ -27,6 +27,7 @@ class UserLogin extends BaseModel
         $this->club_id = isset($attributes['company_id']) ? $attributes['company_id'] : null;
         $this->user_id = isset($attributes['user_id']) ? $attributes['user_id'] : null;
         $this->ip = isset($attributes['ip']) ? $attributes['ip'] : null;
+        $this->device = isset($attributes['device']) ? $attributes['device'] : null;
 
         # 기타
         $this->etc = isset($attributes['etc']) ? $attributes['etc'] : null;

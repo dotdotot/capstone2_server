@@ -21,9 +21,10 @@ use App\Http\Controllers\Open\ClubController as OpenClubController;
 Route::group(
     [],
     function () {
-        # 최근 생일 - api/login?id={id}&password={password}
-        Route::get('login', [AccountController::class, 'login']);
-        # 최근 로그인 정보 - api/joinMembership
+        # 최근 생일 - api/recentBirthday?club_code={club_code}
+        Route::get('recentBirthday', [OpenUserController::class, 'recentBirthday']);
+        # 최근 로그인 정보 - api/loginInfomation?club_code={club_code}&user_id={user_id}
+        Route::get('loginInfomation', [OpenUserController::class, 'loginInfomation']);
     }
 );
 

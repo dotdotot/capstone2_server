@@ -273,6 +273,7 @@ return new class () extends Migration {
             $table->unsignedBigInteger('club_id')->comment('동아리번호');
             $table->unsignedBigInteger('user_id')->comment('사용자아이디');
             $table->string('ip', 100)->nullable()->comment('접속 ip');
+            $table->string('device', 100)->nullable()->comment('접속 기기');
             $table->string('etc', 100)->nullable()->comment('기타');
             $table->timestampsTz($precision = 3);
             $table->softDeletesTz($column = 'deleted_at', $precision = 3);
