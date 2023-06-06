@@ -310,7 +310,7 @@ return new class () extends Migration {
         Schema::create('cctv_consents', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('club_id')->comment('동아리번호');
-            $table->unsignedBigInteger('user_id')->comment('랭크번호');
+            $table->unsignedBigInteger('user_id')->comment('사용자번호');
             $table->string('consent', 500)->nullable()->comment('여부');
             $table->timestampsTz($precision = 3);
             $table->softDeletesTz($column = 'deleted_at', $precision = 3);
@@ -324,6 +324,74 @@ return new class () extends Migration {
             $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
         });
+
+        # announcement_boards table
+        Schema::create('announcement_boards', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('club_id')->comment('동아리번호');
+            $table->unsignedBigInteger('user_id')->comment('사용자번호');
+            $table->string('title', 500)->nullable()->comment('제목');
+            $table->string('content', 500)->nullable()->comment('내용');
+            $table->unsignedBigInteger('hits')->comment('조회 수');
+            $table->boolean('image')->default(false)->comment('이미지 여부');
+            $table->boolean('block_comment')->default(false)->comment('댓글 금지 여부');
+            $table->timestampsTz($precision = 3);
+            $table->softDeletesTz($column = 'deleted_at', $precision = 3);
+
+            // 인덱스
+            $table->index('club_id');
+            $table->index('user_id');
+            $table->index('deleted_at');
+
+            // 키 값
+            $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+        });
+
+        # boards table
+        Schema::create('boards', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('club_id')->comment('동아리번호');
+            $table->unsignedBigInteger('user_id')->comment('사용자번호');
+            $table->string('title', 500)->nullable()->comment('제목');
+            $table->string('content', 500)->nullable()->comment('내용');
+            $table->unsignedBigInteger('hits')->comment('조회 수');
+            $table->boolean('image')->default(false)->comment('이미지 여부');
+            $table->timestampsTz($precision = 3);
+            $table->softDeletesTz($column = 'deleted_at', $precision = 3);
+
+            // 인덱스
+            $table->index('club_id');
+            $table->index('user_id');
+            $table->index('deleted_at');
+
+            // 키 값
+            $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+        });
+
+        # comments table
+        Schema::create('comments', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('club_id')->comment('동아리번호');
+            $table->unsignedBigInteger('user_id')->comment('사용자번호');
+            $table->unsignedBigInteger('board_id')->comment('게시판번호');
+            $table->string('content', 500)->nullable()->comment('내용');
+            $table->boolean('hidden_comment')->default(false)->comment('비밀 댓글 여부');
+            $table->timestampsTz($precision = 3);
+            $table->softDeletesTz($column = 'deleted_at', $precision = 3);
+
+            // 인덱스
+            $table->index('club_id');
+            $table->index('user_id');
+            $table->index('board_id');
+            $table->index('deleted_at');
+
+            // 키 값
+            $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('board_id')->references('id')->on('boards')->onUpdate('cascade')->onDelete('cascade');
+        });
     }
 
     /**
@@ -334,6 +402,9 @@ return new class () extends Migration {
     public function down()
     {
         # 테이블 삭제
+        Schema::dropIfExists('comments');
+        Schema::dropIfExists('boards');
+        Schema::dropIfExists('announcement_boards');
         Schema::dropIfExists('cctv_consents');
         Schema::dropIfExists('project_consents');
         Schema::dropIfExists('user_login');
