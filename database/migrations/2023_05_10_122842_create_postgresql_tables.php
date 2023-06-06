@@ -288,12 +288,12 @@ return new class () extends Migration {
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
         });
 
-        # access_tokens table
+        # project_consents table
         Schema::create('project_consents', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('club_id')->comment('동아리번호');
             $table->unsignedBigInteger('user_id')->comment('랭크번호');
-            $table->string('consent', 500)->nullable()->comment('여부');
+            $table->boolean('consent')->default(true)->comment('여부');
             $table->timestampsTz($precision = 3);
             $table->softDeletesTz($column = 'deleted_at', $precision = 3);
 
@@ -307,12 +307,12 @@ return new class () extends Migration {
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
         });
 
-        # access_tokens table
+        # cctv_consents table
         Schema::create('cctv_consents', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('club_id')->comment('동아리번호');
             $table->unsignedBigInteger('user_id')->comment('사용자번호');
-            $table->string('consent', 500)->nullable()->comment('여부');
+            $table->boolean('consent')->default(true)->comment('동의여부');
             $table->timestampsTz($precision = 3);
             $table->softDeletesTz($column = 'deleted_at', $precision = 3);
 

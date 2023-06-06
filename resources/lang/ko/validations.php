@@ -28,4 +28,8 @@ return [
     'email' => '유효하지 않은 이메일 형식입니다.',
     'address' => '유효하지 않은 주소입니다.',
     'birthday' => '유효하지 않은 생일입니다.',
+
+    'cctv_consent' => 'CCTV 동의 여부가 없습니다.',
+    'project_consent' => '프로젝트 동의 여부가 없습니다.',
+
 ];

@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\CCTVConsent;
 use App\Models\Club;
 use App\Models\Department;
 use App\Models\JwtToken;
 use App\Models\Member;
+use App\Models\ProjectConsent;
 use App\Models\Rank;
 use App\Models\RankPermission;
 use App\Models\Team;
@@ -44,6 +46,7 @@ class AccountController extends Controller
             return abort(403, __('aborts.does_not_match.user_id'));
         }
 
+        // dd($user->password, $password);
         # 비밀번호 확인
         if(!$user->password === $password) {
             return abort(403, __('aborts.does_not_match.password'));
@@ -126,6 +129,8 @@ class AccountController extends Controller
             'email' => 'required|string|regex:/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i',
             'address' => 'nullable|string|max:255',
             'birthday' => 'required|string|regex:/^(\d{4})-?(\d{2})-?(\d{2})$/',
+            'cctv_consent' => 'required|boolean',
+            'project_consent' => 'required|boolean',
         ], [
             'clud_code.*' => __('validations.club_code'),
             'department_code.*' => __('validations.department_code'),
@@ -136,6 +141,8 @@ class AccountController extends Controller
             'email.*' => __('validations.email'),
             'address.*' => __('validations.address'),
             'birthday.*' => __('validations.birthday'),
+            'cctv_consent.*' => __('validations.cctv_consent'),
+            'project_consent.*' => __('validations.project_consent'),
             '*' => __('validations.format')
         ]);
 
@@ -148,6 +155,8 @@ class AccountController extends Controller
         $email = $request->input('email');
         $address = $request->input('address');
         $birthday = $request->input('birthday');
+        $cctv_consent = $request->input('cctv_consent');
+        $project_consent = $request->input('project_consent');
 
         # 클럽 조회
         $club = Club::where('code', $club_code)->first();
@@ -161,8 +170,12 @@ class AccountController extends Controller
             return abort(403, __('aborts.does_not_exist.department'));
         }
 
+        # 이미 존재하는 학번인지 검사
+        if(User::where('student_id', $student_id)->first() !== null) {
+            abort(403, __('aborts.does_not_exist.student_id'));
+        }
         # 사용자 생성
-        User::create([
+        $user = User::create([
             'club_id' => $club->id,
             'department_id' => $department->id,
             'rank_id' => 3,
@@ -176,6 +189,18 @@ class AccountController extends Controller
             'password' => $email
         ]);
 
+        # CCTV 동의
+        CCTVConsent::create([
+            'club_id' => $club->id,
+            'user_id' => $user->id,
+            'consent' => $cctv_consent
+        ]);
+        # 프로젝트 동의
+        ProjectConsent::create([
+            'club_id' => $club->id,
+            'user_id' => $user->id,
+            'consent' => $project_consent
+        ]);
 
         return response()->json([
             'result' => 'success'
