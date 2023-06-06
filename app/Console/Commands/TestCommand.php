@@ -56,6 +56,7 @@ class TestCommand extends Command
      */
     public function handle()
     {
+        dd(User::where('club_id', 1)->inRandomOrder()->select('id')->first()->value('id'));
         $a = UserLogin::where('user_id', 33)->first();
         dd($a);
         $departments = Department::where('club_id', 12)->select(['name', 'code'])->get();

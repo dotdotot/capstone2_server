@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\AnnouncementBoard;
 use App\Models\RankPermission;
 use Illuminate\Database\Seeder;
 
@@ -39,6 +40,13 @@ class DatabaseSeeder extends Seeder
             $this->call(CCTVConsentSeeder::class);
             # 프로젝트 동의여부 생성
             $this->call(ProjectConsentSeeder::class);
+
+            # 공지사항 게시판 생성
+            $this->call(AnnouncementBoardSeeder::class);
+            # 게시판 생성
+            $this->call(BoardSeeder::class);
+            # 댓글 생성
+            $this->call(CommentSeeder::class);
         }
     }
 }

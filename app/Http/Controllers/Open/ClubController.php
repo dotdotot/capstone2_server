@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Common;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
@@ -17,25 +17,17 @@ use App\Models\TeamClosure;
 use App\Models\User;
 use App\Models\UserLogin;
 
-class UserLoginController extends Controller
+/**
+ * public @method login(Request $request) :: 사용자 로그인
+ * public @method joinMembership(Request $request) :: 사용자 회원가입
+ * public @method idFind(Request $request) :: 사용자 아이디 찾기
+ * public @method passwordFind(Request $request) :: 사용자 비밀번호 찾기
+ * public @method refreshtoken(Request $request) :: 토큰 재발급
+ */
+class ClubController extends Controller
 {
     public function __construct(public Client $client)
     {
         $this->client = $client;
-    }
-
-    public function servers(Request $request)
-    {
-        $this->validate($request, [
-            'account' => 'nullable|string',
-        ], [
-            '*' => __('validations.format')
-        ]);
-
-        if ($server === null) {
-            abort(403, __('aborts.no_access'));
-        }
-
-        return response()->json($server->hosts);
     }
 }

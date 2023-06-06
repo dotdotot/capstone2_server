@@ -34,24 +34,24 @@ class RankPermission extends BaseModel
         # 랭크 아이디
         $this->rank_id = isset($attributes['rank_id']) ? $attributes['rank_id'] : null;
         # 게시판 권한
-        $this->board_access = isset($attributes['board_access']) ? $attributes['board_access'] : false;
+        $this->board_access = isset($attributes['board_access']) ? $attributes['board_access'] : true;
         # 댓글 권한
-        $this->comment_access = isset($attributes['comment_access']) ? $attributes['comment_access'] : null;
+        $this->comment_access = isset($attributes['comment_access']) ? $attributes['comment_access'] : true;
         # 이미지 업로드 권한
-        $this->image_add_access = isset($attributes['image_add_access']) ? $attributes['image_add_access'] : null;
+        $this->image_add_access = isset($attributes['image_add_access']) ? $attributes['image_add_access'] : true;
         # 익명 댓글 권한
-        $this->anonymous_comment_access = isset($attributes['anonymous_comment_access']) ? $attributes['anonymous_comment_access'] : null;
+        $this->anonymous_comment_access = isset($attributes['anonymous_comment_access']) ? $attributes['anonymous_comment_access'] : true;
 
         # 커뮤니티 추가 권한
-        $this->community_add_access = isset($attributes['community_add_access']) ? $attributes['community_add_access'] : null;
+        $this->community_add_access = isset($attributes['community_add_access']) ? $attributes['community_add_access'] : false;
         # 사용자 벤 권한
-        $this->user_ben_access = isset($attributes['user_ben_access']) ? $attributes['user_ben_access'] : null;
+        $this->user_ben_access = isset($attributes['user_ben_access']) ? $attributes['user_ben_access'] : false;
         # 관리자 관련 게시판 탭 권한
-        $this->admin_board_access = isset($attributes['admin_board_access']) ? $attributes['admin_board_access'] : null;
+        $this->admin_board_access = isset($attributes['admin_board_access']) ? $attributes['admin_board_access'] : false;
         # 특정 사용자 변경 권한
-        $this->user_change_access = isset($attributes['user_change_access']) ? $attributes['user_change_access'] : null;
+        $this->user_change_access = isset($attributes['user_change_access']) ? $attributes['user_change_access'] : false;
         # 어드민 권한
-        $this->admin_access = isset($attributes['admin_access']) ? $attributes['admin_access'] : null;
+        $this->admin_access = isset($attributes['admin_access']) ? $attributes['admin_access'] : false;
 
         $this->position = isset($attributes['position']) ? $attributes['position'] : 0;
 

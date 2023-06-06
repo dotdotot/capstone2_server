@@ -330,8 +330,8 @@ return new class () extends Migration {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('club_id')->comment('동아리번호');
             $table->unsignedBigInteger('user_id')->comment('사용자번호');
-            $table->string('title', 500)->nullable()->comment('제목');
-            $table->string('content', 500)->nullable()->comment('내용');
+            $table->string('title', 100)->nullable()->comment('제목');
+            $table->string('content', 2000)->nullable()->comment('내용');
             $table->unsignedBigInteger('hits')->comment('조회 수');
             $table->boolean('image')->default(false)->comment('이미지 여부');
             $table->boolean('block_comment')->default(false)->comment('댓글 금지 여부');
@@ -353,8 +353,8 @@ return new class () extends Migration {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('club_id')->comment('동아리번호');
             $table->unsignedBigInteger('user_id')->comment('사용자번호');
-            $table->string('title', 500)->nullable()->comment('제목');
-            $table->string('content', 500)->nullable()->comment('내용');
+            $table->string('title', 100)->nullable()->comment('제목');
+            $table->string('content', 2000)->nullable()->comment('내용');
             $table->unsignedBigInteger('hits')->comment('조회 수');
             $table->boolean('image')->default(false)->comment('이미지 여부');
             $table->timestampsTz($precision = 3);
@@ -376,7 +376,7 @@ return new class () extends Migration {
             $table->unsignedBigInteger('club_id')->comment('동아리번호');
             $table->unsignedBigInteger('user_id')->comment('사용자번호');
             $table->unsignedBigInteger('board_id')->comment('게시판번호');
-            $table->string('content', 500)->nullable()->comment('내용');
+            $table->string('content', 300)->nullable()->comment('내용');
             $table->boolean('hidden_comment')->default(false)->comment('비밀 댓글 여부');
             $table->timestampsTz($precision = 3);
             $table->softDeletesTz($column = 'deleted_at', $precision = 3);

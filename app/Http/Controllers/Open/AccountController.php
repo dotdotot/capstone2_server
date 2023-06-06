@@ -34,6 +34,7 @@ class AccountController extends Controller
     // login(Request $request) :: 사용자 로그인
     public function login(Request $request)
     {
+        dd($request->header('User-Agent'));
         # url에서 아이디, 비밀번호 추출
         $id = intval($request->get('id'));
         $password = $request->get('password');
@@ -48,7 +49,6 @@ class AccountController extends Controller
         if(!$user->password === $password) {
             return abort(403, __('aborts.does_not_match.password'));
         }
-
         # 사용자 접속 ip 추가
         UserLogin::create([
             'club_id' => $user->club_id,
