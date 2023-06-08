@@ -46,11 +46,14 @@ class AccountController extends Controller
             return abort(403, __('aborts.does_not_match.user_id'));
         }
 
-        // dd($user->password, $password);
         # 비밀번호 확인
-        if(!$user->password === $password) {
+        if(strcmp($user->password, $password) !== 0) {
             return abort(403, __('aborts.does_not_match.password'));
         }
+
+        # 사용자 권한 확인
+        $rank_name = Rank::where('club_id', $user->club_id)->where('id', $user->rank_id)->value('name');
+
         # 사용자 접속 ip 추가
         UserLogin::create([
             'club_id' => $user->club_id,
@@ -109,6 +112,7 @@ class AccountController extends Controller
         $data = [
             'club_id' => $user->club_id,
             'user_id' => $user->id,
+            'rank' => $rank_name,
             'access_token' => $jwtToken->access_token,
             'access_token_end_at' => $jwtToken->access_token_end_at,
         ];
