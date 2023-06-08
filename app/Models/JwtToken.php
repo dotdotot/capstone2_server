@@ -115,7 +115,7 @@ class JwtToken extends BaseModel
     {
         # 토큰 유효성 검사
         $token = JwtToken::where('user_id', $userId)->first();
-        if ($token->access_token_end_at->isPast()) {
+        if ($token === null || $token->access_token_end_at->isPast()) {
             return null;
         }
 
