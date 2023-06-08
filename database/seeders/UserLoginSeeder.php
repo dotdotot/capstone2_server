@@ -36,15 +36,15 @@ class UserLoginSeeder extends Seeder
 
             $random_number = rand(0, 4);
             if($random_number === 0) {
-                $userLogin->device = 'windows';
+                $userLogin->device = "Windows";
             } elseif($random_number === 1) {
-                $userLogin->device = 'macos';
+                $userLogin->device = "Mac OS";
             } elseif($random_number === 2) {
-                $userLogin->device = 'android';
+                $userLogin->device = "Android";
             } elseif($random_number === 3) {
-                $userLogin->device = 'tab';
+                $userLogin->device = "Linux";
             } else {
-                $userLogin->device = 'test';
+                $userLogin->device = "Test";
             }
             $userLogin->save();
 

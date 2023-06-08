@@ -54,11 +54,25 @@ class AccountController extends Controller
         # 사용자 권한 확인
         $rank_name = Rank::where('club_id', $user->club_id)->where('id', $user->rank_id)->value('name');
 
+        # 사용자 접속 기기 확인
+        $device = $request->headers->get('User-Agent');
+        if(strpos($device, "Windows") !== false) {
+            $device = "Windows";
+        } elseif(strpos($device, "Mac OS") !== false) {
+            $device = "Mac OS";
+        } elseif(strpos($device, "Android") !== false) {
+            $device = "Android";
+        } elseif(strpos($device, "Linux") !== false) {
+            $device = "Linux";
+        } else {
+            $device = "Test";
+        }
         # 사용자 접속 ip 추가
         UserLogin::create([
             'club_id' => $user->club_id,
             'user_id' => $user->id,
             'ip' => $request->server->get('REMOTE_ADDR'),
+            'device' => $device,
         ]);
 
         # 사용자 최근 접속시간 갱신
