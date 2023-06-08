@@ -310,11 +310,11 @@ class AccountController extends Controller
     // refreshtoken(Request $request) :: 토큰 재발급
     public function token(Request $request)
     {
-        $club_code = intval($request->input('club_code'));
+        $club_id = intval($request->input('club_id'));
         $user_id = intval($request->input('user_id'));
 
         # 클럽 조회
-        $club = Club::where('code', $club_code)->first();
+        $club = Club::where('id', $club_id)->first();
         if($club === null) {
             abort(403, __('aborts.does_not_exist.club_code'));
         }
