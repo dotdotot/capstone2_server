@@ -31,8 +31,9 @@ class UserController extends Controller
     # 로그인 정보 반환
     public function loginInfomation(Request $request)
     {
+        dd($request);
         #   접속 기기 알아내기
-        return ($request->header('User-Agent'));
+        return $request;
     }
 
     # 최근 생일 반환

@@ -5,8 +5,10 @@ return [
     'request' => '잘못된 요청입니다.',
     'logout_or_long_term_inactivity' => '로그아웃 되었거나 장시간 사용하지 않아 연결이 종료되었습니다.',
     'does_not_exist' => [
+        'token' => '토큰이 존재하지 않습니다.',
         'club_id' => '존재하지 않는 동아리아이디입니다.',
         'club_code' => '존재하지 않는 동아리입니다.',
+        'user_id' => '존재하지 않는 사용자입니다.',
         'department' => '동아리에 학과가 존재하지 않습니다',
         'uploaded_file' => '업로드 파일이 존재하지 않습니다.',
         'message' => '존재하지 않는 메시지입니다.',
@@ -19,6 +21,7 @@ return [
     'does_not_match' => [
         'user_id' => '사용자 아이디가 일치하지 않습니다.',
         'password' => '사용자 비밀번호가 일치하지 않습니다.',
+        'token' => '토큰에 저장된 사용자가 아닙니다.',
         'number_of_uploaded_files' => '업로드된 파일 수와 요청된 파일 수가 일치하지 않습니다.',
     ],
     'wrong' => [

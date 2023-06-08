@@ -264,6 +264,7 @@ class AccountController extends Controller
     // passwordFind(Request $request) :: 사용자 비밀번호 찾기
     public function passwordFind(Request $request)
     {
+        dd($request);
         $club_code = intval($request->input('club_code'));
         $name = $request->input('name');
         $student_id = intval($request->input('student_id'));
