@@ -32,7 +32,7 @@ class UserController extends Controller
     public function loginInfomation(Request $request)
     {
         #   접속 기기 알아내기
-        dd($request->header('User-Agent'));
+        return ($request->header('User-Agent'));
     }
 
     # 최근 생일 반환

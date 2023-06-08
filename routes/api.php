@@ -14,20 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-use App\Http\Controllers\Open\UserController as OpenUserController;
-use App\Http\Controllers\Open\ClubController as OpenClubController;
-
-# 공통 사용 가능한 APIs
-Route::group(
-    [],
-    function () {
-        # 최근 생일 - api/recentBirthday?club_code={club_code}
-        Route::get('recentBirthday', [OpenUserController::class, 'recentBirthday']);
-        # 최근 로그인 정보 - api/loginInfomation?club_code={club_code}&user_id={user_id}
-        Route::get('loginInfomation', [OpenUserController::class, 'loginInfomation']);
-    }
-);
-
 use App\Http\Controllers\Open\AccountController as OpenAccountController;
 
 # 로그인 전 사용 가능한 APIs
@@ -52,6 +38,9 @@ Route::group(
     }
 );
 
+use App\Http\Controllers\Open\UserController as OpenUserController;
+use App\Http\Controllers\Open\ClubController as OpenClubController;
+
 # 로그인 후 사용 가능한 APIs
 Route::group(
     [
@@ -62,13 +51,15 @@ Route::group(
         ],
     ],
     function () {
-        Route::middleware(['jwt'/* , 'contract' */])->group(
+        /**
+        * 미들웨어: jwt 적용
+        */
+        Route::middleware(['jwt'])->group(
             function () {
-                # 클라이언트 버전 정보 - api/v1/companies/{company_id}/users/{user_id}/client-versions?agent_id={agent_id}
-                Route::get('client-versions', [CommonAgentController::class, 'clientVersion']);
-
-                # 클라이언트 버전 정보 - api/v1/companies/{company_id}/users/{user_id}/client-versions?agent_id={agent_id}
-                Route::get('client-versions', [CommonAgentController::class, 'clientVersion']);
+                # 최근 생일 - api/clubs/{club_id}/users/{user_id}/recentBirthday
+                Route::get('recentBirthday', [OpenUserController::class, 'recentBirthday']);
+                # 최근 로그인 정보 - api/clubs/{club_id}/users/{user_id}/loginInfomation
+                Route::get('loginInfomation', [OpenUserController::class, 'loginInfomation']);
             }
         );
     }
