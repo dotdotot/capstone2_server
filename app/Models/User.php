@@ -83,7 +83,7 @@ class User extends BaseModel implements JWTSubject
 
     public function rank()
     {
-        return $this->hasOne(Rank::class);
+        return $this->belongsTo(Rank::class);
     }
 
     // # 비밀번호 암호화
