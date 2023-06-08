@@ -28,7 +28,7 @@ Route::group(
         Route::get('idFind', [OpenAccountController::class, 'idFind']);
         # 비밀번호찾기 - api/passwordFind?club_code={club_code}&name={name}&student_id={student_id}
         Route::get('passwordFind', [OpenAccountController::class, 'passwordFind']);
-        # 토큰 재발급 - api/token?club_code={club_code}&user_id={user_id}
+        # 토큰 재발급 - api/token?club_id={club_id}&user_id={user_id}
         Route::get('token', [OpenAccountController::class, 'token']);
 
         Route::prefix('club')->group(function () {
