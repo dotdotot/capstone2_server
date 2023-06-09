@@ -207,13 +207,24 @@ class AccountController extends Controller
             'password' => $email
         ]);
 
-        # CCTV 동의
+        # 사용자 멤버 생성
+        Member::create([
+            'club_id' => $club->id,
+            'department_id' => $department->id,
+            'user_id' => $user->id,
+            'position' => Member::whereNull('team_id')->count(),
+            'default' => true,
+            'leader' => false,
+        ]);
+
+        # CCTV 동의 생성
         CCTVConsent::create([
             'club_id' => $club->id,
             'user_id' => $user->id,
             'consent' => $cctv_consent
         ]);
-        # 프로젝트 동의
+
+        # 프로젝트 동의 생성
         ProjectConsent::create([
             'club_id' => $club->id,
             'user_id' => $user->id,

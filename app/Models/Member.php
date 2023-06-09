@@ -33,7 +33,7 @@ class Member extends BaseModel
         $this->department_id = isset($attributes['department_id']) ? $attributes['department_id'] : null;
         $this->team_id = isset($attributes['team_id']) ? $attributes['team_id'] : null;
         $this->user_id = isset($attributes['user_id']) ? $attributes['user_id'] : null;
-        $this->rank_id = isset($attributes['rank_id']) ? $attributes['rank_id'] : null;
+        $this->rank_id = isset($attributes['rank_id']) ? $attributes['rank_id'] : 3;
         $this->default = isset($attributes['default']) ? $attributes['default'] : false;
         $this->leader = isset($attributes['leader']) ? $attributes['leader'] : false;
         $this->position = isset($attributes['position']) ? $attributes['position'] : 0;
