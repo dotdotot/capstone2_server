@@ -45,13 +45,15 @@ class Club extends BaseModel
 
     public static function clubCodeCreate()
     {
-        # Minimum,Maximum value of the random code
-        $min = 1000;
-        $max = 9999;
+        $randomCode = 0;
+        for($i = 0; $i < 1000; $i++) {
+            $randomCode = rand(1000, 9999);
 
-        do {
-            $randomCode = random_int($min, $max);
-        } while (Club::where('code', 1)->get()->isNotEmpty());
+            $club = Club::where('code', $randomCode)->first();
+            if($club === null) {
+                break;
+            }
+        }
 
         return $randomCode;
     }

@@ -19,30 +19,35 @@ class DepartmentSeeder extends Seeder
      */
     public function run()
     {
-        $club = Club::where('name', 'C403')->select('id', 'name')->first();
+        $clubs = Club::select('id', 'name')->get();
         $faker = Faker::create('ko_KR');
 
-        Department::create([
-            'club_id' => $club->id,
-            'name' => '컴퓨터공학과',
-            'code' => Department::departmentCodeCreate(),
-            'position' => Department::where('club_id', $club->id)->count(),
-        ]);
-
-        # faker를 사용하여 10개의 학과 생성
-        for($i = 0; $i < 10; $i++) {
-            $departmentName = $faker->numerify('테스트학과 ##');
-            if(Department::where('name', $departmentName)->first() !== null) {
-                $i--;
-                continue;
+        # 클럽별로 생성
+        foreach ($clubs as $club) {
+            if($club->name === 'C403') {
+                Department::create([
+                    'club_id' => $club->id,
+                    'name' => '컴퓨터공학과',
+                    'code' => Department::departmentCodeCreate(),
+                    'position' => Department::where('club_id', $club->id)->count(),
+                ]);
             }
 
-            Department::create([
-                'club_id' => $club->id,
-                'name' => $departmentName,
-                'code' => Department::departmentCodeCreate(),
-                'position' => Department::where('club_id', $club->id)->count(),
-            ]);
+            # faker를 사용하여 10개의 학과 생성
+            for($i = 0; $i < 10; $i++) {
+                $departmentName = $faker->numerify('테스트학과 ####');
+                if(Department::where('name', $departmentName)->first() !== null) {
+                    $i--;
+                    continue;
+                }
+
+                Department::create([
+                    'club_id' => $club->id,
+                    'name' => $departmentName,
+                    'code' => Department::departmentCodeCreate(),
+                    'position' => Department::where('club_id', $club->id)->count(),
+                ]);
+            }
         }
     }
 }

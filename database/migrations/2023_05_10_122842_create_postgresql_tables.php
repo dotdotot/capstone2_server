@@ -68,9 +68,6 @@ return new class () extends Migration {
             $table->timestampsTz($precision = 3);
             $table->softDeletesTz($column = 'deleted_at', $precision = 3);
 
-            # 유니크 값
-            $table->unique('name');
-
             # 인덱스
             $table->index('id');
             $table->index('updated_at');
@@ -90,9 +87,6 @@ return new class () extends Migration {
             $table->timestampsTz($precision = 3);
             $table->softDeletesTz($column = 'deleted_at', $precision = 3);
 
-            # 유니크 값
-            $table->unique('name');
-
             # 인덱스
             $table->index('id');
             $table->index('club_id');
@@ -105,6 +99,7 @@ return new class () extends Migration {
             $table->foreign('parent_id')->references('id')->on('teams')->onUpdate('cascade')->onDelete('set null');
         });
 
+        # 클로저 테이블
         Schema::create('team_closure', function (Blueprint $table) {
             $table->bigIncrements('closure_id');
             $table->unsignedBigInteger('ancestor');
@@ -167,7 +162,7 @@ return new class () extends Migration {
             $table->softDeletesTz($column = 'deleted_at', $precision = 3);
 
             # 유니크 값
-            $table->unique('student_id');
+            $table->unique(['club_id', 'student_id']);
 
             # 인덱스
             $table->index('id');
@@ -326,14 +321,58 @@ return new class () extends Migration {
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
         });
 
-        # announcement_boards table
-        Schema::create('announcement_boards', function (Blueprint $table) {
+        // # announcement_boards table
+        // Schema::create('announcement_boards', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->unsignedBigInteger('club_id')->comment('동아리번호');
+        //     $table->unsignedBigInteger('user_id')->comment('사용자번호');
+        //     $table->string('title', 100)->nullable()->comment('제목');
+        //     $table->string('content', 2000)->nullable()->comment('내용');
+        //     $table->unsignedBigInteger('hits')->comment('조회 수');
+        //     $table->boolean('image')->default(false)->comment('이미지 여부');
+        //     $table->boolean('block_comment')->default(false)->comment('댓글 금지 여부');
+        //     $table->timestampsTz($precision = 3);
+        //     $table->softDeletesTz($column = 'deleted_at', $precision = 3);
+
+        //     // 인덱스
+        //     $table->index('club_id');
+        //     $table->index('user_id');
+        //     $table->index('deleted_at');
+
+        //     // 키 값
+        //     $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
+        //     $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+        // });
+
+        # menus table
+        Schema::create('menus', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('club_id')->comment('동아리번호');
+            $table->string('title', 100)->nullable()->comment('제목');
+            $table->string('type', 50)->nullable()->comment('메뉴 타입');
+            $table->unsignedBigInteger('position')->comment('순서');
+            $table->timestampsTz($precision = 3);
+            $table->softDeletesTz($column = 'deleted_at', $precision = 3);
+
+            // 인덱스
+            $table->index('club_id');
+            $table->index('type');
+            $table->index('deleted_at');
+
+            // 키 값
+            $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
+        });
+
+        # boards table
+        Schema::create('boards', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('club_id')->comment('동아리번호');
             $table->unsignedBigInteger('user_id')->comment('사용자번호');
+            $table->unsignedBigInteger('menu_id')->comment('메뉴번호');
             $table->string('title', 100)->nullable()->comment('제목');
             $table->string('content', 2000)->nullable()->comment('내용');
             $table->unsignedBigInteger('hits')->comment('조회 수');
+            $table->unsignedBigInteger('position')->comment('순서');
             $table->boolean('image')->default(false)->comment('이미지 여부');
             $table->boolean('block_comment')->default(false)->comment('댓글 금지 여부');
             $table->timestampsTz($precision = 3);
@@ -342,33 +381,88 @@ return new class () extends Migration {
             // 인덱스
             $table->index('club_id');
             $table->index('user_id');
+            $table->index('menu_id');
             $table->index('deleted_at');
 
             // 키 값
             $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('menu_id')->references('id')->on('menus')->onUpdate('cascade')->onDelete('cascade');
         });
 
-        # boards table
-        Schema::create('boards', function (Blueprint $table) {
+        # bulletins table
+        Schema::create('bulletins', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('club_id')->comment('동아리번호');
             $table->unsignedBigInteger('user_id')->comment('사용자번호');
+            $table->unsignedBigInteger('menu_id')->comment('메뉴번호');
             $table->string('title', 100)->nullable()->comment('제목');
             $table->string('content', 2000)->nullable()->comment('내용');
-            $table->unsignedBigInteger('hits')->comment('조회 수');
-            $table->boolean('image')->default(false)->comment('이미지 여부');
+            $table->unsignedBigInteger('position')->comment('순서');
             $table->timestampsTz($precision = 3);
             $table->softDeletesTz($column = 'deleted_at', $precision = 3);
 
             // 인덱스
             $table->index('club_id');
             $table->index('user_id');
+            $table->index('menu_id');
             $table->index('deleted_at');
 
             // 키 값
             $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('menu_id')->references('id')->on('menus')->onUpdate('cascade')->onDelete('cascade');
+        });
+
+        # common_moneys table
+        Schema::create('common_moneys', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('club_id')->comment('동아리번호');
+            $table->unsignedBigInteger('menu_id')->comment('메뉴번호');
+            $table->unsignedBigInteger('money')->comment('돈');
+            $table->unsignedBigInteger('position')->comment('순서');
+            $table->timestampsTz($precision = 3);
+            $table->softDeletesTz($column = 'deleted_at', $precision = 3);
+
+            // 유니크
+            $table->unique(['club_id', 'menu_id']);
+
+            // 인덱스
+            $table->index('club_id');
+            $table->index('menu_id');
+            $table->index('deleted_at');
+
+            // 키 값
+            $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('menu_id')->references('id')->on('menus')->onUpdate('cascade')->onDelete('cascade');
+        });
+
+        # image_boards table
+        Schema::create('image_boards', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('club_id')->comment('동아리번호');
+            $table->unsignedBigInteger('user_id')->comment('사용자번호');
+            $table->unsignedBigInteger('menu_id')->comment('메뉴번호');
+            $table->unsignedBigInteger('image_id')->nullable()->comment('이미지번호');
+
+            $table->string('title', 100)->nullable()->comment('제목');
+            $table->unsignedBigInteger('money')->nullable()->comment('지불');
+
+            $table->unsignedBigInteger('position')->comment('순서');
+            $table->timestampsTz($precision = 3);
+            $table->softDeletesTz($column = 'deleted_at', $precision = 3);
+
+            // 인덱스
+            $table->index('club_id');
+            $table->index('user_id');
+            $table->index('menu_id');
+            $table->index('image_id');
+            $table->index('deleted_at');
+
+            // 키 값
+            $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('menu_id')->references('id')->on('menus')->onUpdate('cascade')->onDelete('cascade');
         });
 
         # comments table
@@ -403,8 +497,20 @@ return new class () extends Migration {
     public function down()
     {
         # 테이블 삭제
+
+        # 토큰 관련 테이블
+        Schema::dropIfExists('oauth_access_tokens');
+        Schema::dropIfExists('oauth_auth_codes');
+        Schema::dropIfExists('oauth_clients');
+        Schema::dropIfExists('oauth_personal_access_clients');
+        Schema::dropIfExists('oauth_refresh_tokens');
+        # 실제 사용 테이블
         Schema::dropIfExists('comments');
+        Schema::dropIfExists('image_boards');
+        Schema::dropIfExists('bulletins');
         Schema::dropIfExists('boards');
+        Schema::dropIfExists('common_moneys');
+        Schema::dropIfExists('menus');
         Schema::dropIfExists('announcement_boards');
         Schema::dropIfExists('cctv_consents');
         Schema::dropIfExists('project_consents');

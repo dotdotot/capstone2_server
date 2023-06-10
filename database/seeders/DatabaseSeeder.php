@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\AnnouncementBoard;
+use App\Models\CommonMoney;
 use App\Models\RankPermission;
 use Illuminate\Database\Seeder;
 
@@ -41,12 +42,18 @@ class DatabaseSeeder extends Seeder
             # 프로젝트 동의여부 생성
             $this->call(ProjectConsentSeeder::class);
 
-            # 공지사항 게시판 생성
-            $this->call(AnnouncementBoardSeeder::class);
+            // # 공지사항 게시판 생성
+            // $this->call(AnnouncementBoardSeeder::class);
+            # 메뉴 생성
+            $this->call(MenuSeeder::class);
             # 게시판 생성
             $this->call(BoardSeeder::class);
-            # 댓글 생성
-            $this->call(CommentSeeder::class);
+            // # 공지 생성
+            $this->call(BulletinSeeder::class);
+            # 이미지 게시판 생성
+            $this->call(ImageBoardSeeder::class);
+            // # 댓글 생성
+            // $this->call(CommentSeeder::class);
         }
     }
 }

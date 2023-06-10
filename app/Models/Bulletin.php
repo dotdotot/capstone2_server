@@ -11,13 +11,13 @@ use Illuminate\Support\Facades\Hash;
 /**
  * public @method departments()
  */
-class Board extends BaseModel
+class Bulletin extends BaseModel
 {
     use HybridRelations;
     use SoftDeletes;
 
     protected $connection = 'pgsql';
-    protected $table = 'boards';
+    protected $table = 'bulletins';
 
     protected $dates = [
         'deleted_at',
@@ -27,7 +27,7 @@ class Board extends BaseModel
     ];
 
     protected $fillable = [
-        'club_id', 'user_id', 'menu_id', 'title', 'content', 'hits', 'position', 'image', 'block_comment', 'created_at', 'updated_at','deleted_at'
+        'club_id', 'user_id', 'menu_id', 'title', 'content', 'position', 'created_at', 'updated_at','deleted_at'
     ];
 
     protected $hidden = [
@@ -47,15 +47,8 @@ class Board extends BaseModel
         $this->title = isset($attributes['title']) ? $attributes['title'] : null;
         # 내용
         $this->content = isset($attributes['content']) ? $attributes['content'] : null;
-        # 조회 수
-        $this->hits = isset($attributes['hits']) ? $attributes['hits'] : 0;
         # 순서
         $this->position = isset($attributes['position']) ? $attributes['position'] : 0;
-
-        # 이미지 여부
-        $this->image = isset($attributes['image']) ? $attributes['image'] : false;
-        # 댓글 금지 여부
-        $this->block_comment = isset($attributes['image']) ? $attributes['image'] : false;
 
         // 삭제/추가/수정 시간
         $this->created_at = isset($attributes['created_at']) ? $attributes['created_at'] : Carbon::now();

@@ -6,6 +6,8 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Club;
 
+use Faker\Factory as Faker;
+
 class ClubSeeder extends Seeder
 {
     /**
@@ -15,6 +17,8 @@ class ClubSeeder extends Seeder
      */
     public function run()
     {
+        $faker = Faker::create('ko_KR');
+
         # c403 seeder 생성
         Club::create([
             'name' => 'C403',
@@ -22,5 +26,14 @@ class ClubSeeder extends Seeder
             'position' => Club::count(),
             'grade' =>  'normal'
         ]);
+
+        for($i = 0; $i <5; $i++) {
+            Club::create([
+                'name' => $faker->name,
+                'code' => Club::clubCodeCreate(),
+                'position' => Club::count(),
+                'grade' =>  'normal'
+            ]);
+        }
     }
 }

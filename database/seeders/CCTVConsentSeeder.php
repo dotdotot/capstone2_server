@@ -18,13 +18,15 @@ class CCTVConsentSeeder extends Seeder
      */
     public function run()
     {
-        $club = Club::where('id', 1)->first();
-        User::where('club_id', $club->id)->each(function ($user) use ($club) {
-            $cctvConsent = new CCTVConsent();
-            $cctvConsent->club_id = $club->id;
-            $cctvConsent->user_id = $user->id;
-            $cctvConsent->consent = true;
-            $cctvConsent->save();
-        });
+        $clubs = Club::get();
+        foreach ($clubs as $club) {
+            User::where('club_id', $club->id)->each(function ($user) use ($club) {
+                $cctvConsent = new CCTVConsent();
+                $cctvConsent->club_id = $club->id;
+                $cctvConsent->user_id = $user->id;
+                $cctvConsent->consent = true;
+                $cctvConsent->save();
+            });
+        }
     }
 }

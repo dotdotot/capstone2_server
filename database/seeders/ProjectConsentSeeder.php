@@ -18,13 +18,15 @@ class ProjectConsentSeeder extends Seeder
      */
     public function run()
     {
-        $club = Club::where('id', 1)->first();
-        User::where('club_id', $club->id)->each(function ($user) use ($club) {
-            $projectConsent = new ProjectConsent();
-            $projectConsent->club_id = $club->id;
-            $projectConsent->user_id = $user->id;
-            $projectConsent->consent = true;
-            $projectConsent->save();
-        });
+        $clubs = Club::get();
+        foreach ($clubs as $club) {
+            User::where('club_id', $club->id)->each(function ($user) use ($club) {
+                $projectConsent = new ProjectConsent();
+                $projectConsent->club_id = $club->id;
+                $projectConsent->user_id = $user->id;
+                $projectConsent->consent = true;
+                $projectConsent->save();
+            });
+        }
     }
 }

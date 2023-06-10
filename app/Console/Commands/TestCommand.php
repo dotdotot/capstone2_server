@@ -56,6 +56,46 @@ class TestCommand extends Command
      */
     public function handle()
     {
+        $a = ['Title 1', 'Title 2', 'Title 3'];
+        dd($a);
+        $faker = Faker::create('ko_KR');
+        // 모든 부서 조회
+        $departments = Team::with([
+            'members.user:id,name',
+            'closureDescendants'
+        ])
+            ->where('club_id', 1)
+            ->orderByRaw('path collate "C"')
+            ->get()
+            ->map(function ($team, $index) {
+                $team->type = 'team';
+
+                $childrenTeams = $team->closureDescendants->pluck('descendant');
+                // 하위부서 포함 사용자 수
+                $team->number_of_user = Member::whereIn('team_id', $childrenTeams->toArray())->count();
+                // 해당 부서 사용자 수
+                $team->number_of_this_user = $team->members->where('default', true)->count();
+                // 하위부서의 id
+                $team->children_teams = $childrenTeams->diff([$team->id])->flatten()->toArray();
+                // 해당 부서의 사용자
+                $team->users = ($team->members->pluck('user.name')->toArray());
+                // 최상위 부서는 회사
+                if ($team->parent_id === null) {
+                    $team->type = 'team';
+                    $team->position = 0;
+                }
+                if ($index === 0) {
+                    $team->parent_id = null;
+                }
+
+                return $team->only([
+                    'id', 'club_id', 'parent_id', 'name', 'position', 'path',
+                    'type', 'number_of_user', 'number_of_this_user', 'users', 'children_teams'
+                ]);
+            });
+
+        dd($departments->toArray());
+
         dd(User::where('club_id', 1)->inRandomOrder()->select('id')->first()->value('id'));
         $a = UserLogin::where('user_id', 33)->first();
         dd($a);
@@ -112,7 +152,6 @@ class TestCommand extends Command
         dd($ranks->where('club_id', $club->id)->where('name', '방장')->value('id'));
         $user = User::InRandomOrder()->select(['id'])->first()['id'];
         dd($user);
-        $faker = Faker::create('ko_KR');
         $club = Club::where('name', 'C403')->select('id', 'name')->first();
         $department = Department::where('club_id', $club->id)->first();
 
@@ -122,42 +161,7 @@ class TestCommand extends Command
         $userLogin->ip = $faker->ipv4;
         $userLogin->save();
         dd(1);
-        // 모든 부서 조회
-        $departments = Team::with([
-            'members.user:id,name',
-            'closureDescendants'
-        ])
-            ->where('club_id', 1)
-            ->orderByRaw('path collate "C"')
-            ->get()
-            ->map(function ($team, $index) {
-                $team->type = 'team';
 
-                $childrenTeams = $team->closureDescendants->pluck('descendant');
-                // 하위부서 포함 사용자 수
-                $team->number_of_user = Member::whereIn('team_id', $childrenTeams->toArray())->count();
-                // 해당 부서 사용자 수
-                $team->number_of_this_user = $team->members->where('default', true)->count();
-                // 하위부서의 id
-                $team->children_teams = $childrenTeams->diff([$team->id])->flatten()->toArray();
-                // 해당 부서의 사용자
-                $team->users = ($team->members->pluck('user.name')->toArray());
-                // 최상위 부서는 회사
-                if ($team->parent_id === null) {
-                    $team->type = 'team';
-                    $team->position = 0;
-                }
-                if ($index === 0) {
-                    $team->parent_id = null;
-                }
-
-                return $team->only([
-                    'id', 'club_id', 'parent_id', 'name', 'position', 'path',
-                    'type', 'number_of_user', 'number_of_this_user', 'users', 'children_teams'
-                ]);
-            });
-
-        dd($departments->toArray());
 
         $faker = Faker::create('ko_KR');
         $team = Team::where('id', 2)->first();
