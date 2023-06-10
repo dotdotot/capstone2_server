@@ -48,12 +48,12 @@ class DatabaseSeeder extends Seeder
             $this->call(MenuSeeder::class);
             # 게시판 생성
             $this->call(BoardSeeder::class);
-            // # 공지 생성
+            # 공지 생성
             $this->call(BulletinSeeder::class);
             # 이미지 게시판 생성
             $this->call(ImageBoardSeeder::class);
-            // # 댓글 생성
-            // $this->call(CommentSeeder::class);
+            # 댓글 생성
+            $this->call(CommentSeeder::class);
         }
     }
 }

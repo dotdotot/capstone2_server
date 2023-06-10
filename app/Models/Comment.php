@@ -43,7 +43,7 @@ class Comment extends BaseModel
         $this->user_id = isset($attributes['user_id']) ? $attributes['user_id'] : null;
         # 게시판 아이디
         $this->board_id = isset($attributes['board_id']) ? $attributes['board_id'] : null;
-        // # 부모 댓글 아이디
+        // # 부모 댓글 아이디 (대댓글)
         // $this->parent_id = isset($attributes['parent_id']) ? $attributes['parent_id'] : null;
         # 내용
         $this->content = isset($attributes['content']) ? $attributes['content'] : null;
