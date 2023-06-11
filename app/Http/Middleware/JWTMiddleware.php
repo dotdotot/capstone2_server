@@ -30,10 +30,23 @@ class JWTMiddleware
         $authorizationHeader = $_SERVER['HTTP_AUTHORIZATION'];
         $token = str_replace('Bearer ', '', $authorizationHeader);
 
+        $urlSegments = explode('/', $request->getPathInfo());
+        $club_id = $urlSegments[3];
+        $user_id = $urlSegments[5];
+
         # 토큰 조회
         $tokenInfo = JwtToken::where('access_token', $token)->first();
         if($tokenInfo === null) {
-            abort(403, '토큰이 존재하지 않습니다.');
+            abort(403, 'Token does not exist.');
+        }
+
+        # 본인 토큰인지 검사
+        $userToken = JwtToken::where('club_id', $club_id)
+                                                ->where('user_id', $user_id)
+                                                ->where('access_token', $token)
+                                                ->first();
+        if($userToken === null) {
+            abort(403, 'Another user token is in use.');
         }
 
         # 토큰 검사
@@ -45,13 +58,13 @@ class JWTMiddleware
         #클럽 조회
         $club = Club::where('id', $tokenInfo->club_id)->first();
         if($club === null) {
-            abort(403, '토큰에 담긴 정보는 존재하지 않는 동아리입니다.');
+            abort(403, 'The information in the token is a club that does not exist.');
         }
 
         # 사용자 조회
         $user = User::where('id', $tokenInfo->user_id)->first();
         if($user === null) {
-            abort(403, '토큰에 담긴 정보는 존재하지 않는 사용자입니다.');
+            abort(403, 'The information contained in the token is a non-existent user.');
         }
 
         # request에 정보 담기
