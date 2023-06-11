@@ -22,6 +22,7 @@ return [
     ],
     'club_doex_not_exist' => [
         'menu' => '클럽 내 메뉴가 존재하지 않습니다.',
+        'emergency_contact_network' => '클럽 내 비상연락망이 존재하지 않습니다.',
         'permission' => '권한이 없습니다.'
     ],
     'does_not_match' => [
