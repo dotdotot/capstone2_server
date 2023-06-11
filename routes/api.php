@@ -43,6 +43,7 @@ Route::group(
 );
 
 use App\Http\Controllers\Open\UserController as OpenUserController;
+use App\Http\Controllers\Open\ClubController as OpenClubController;
 use App\Http\Controllers\Admin\MenuController as AdminMenuController;
 use App\Http\Controllers\Open\OrganizationController as OpenOrganizationController;
 
@@ -65,6 +66,8 @@ Route::group(
                 Route::get('recentBirthday', [OpenUserController::class, 'recentBirthday']);
                 # 최근 로그인 정보 - api/clubs/{club_id}/users/{user_id}/loginInfomation
                 Route::get('loginInfomation', [OpenUserController::class, 'loginInfomation']);
+                # 비상연락망 정보 - api/clubs/{club_id}/users/{user_id}/emergencyContactNetwork
+                Route::get('emergencyContactNetwork', [OpenClubController::class, 'emergencyContactNetwork']);
 
                 # 조직도 반환 - api/clubs/{club_id}/users/{user_id}/organizationChat
                 Route::get('organizationChart', [OpenOrganizationController::class, 'organizationChart']);

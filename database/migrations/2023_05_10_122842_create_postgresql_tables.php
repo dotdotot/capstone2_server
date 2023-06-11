@@ -33,6 +33,30 @@ return new class () extends Migration {
             $table->index('deleted_at');
         });
 
+        # club_emergency_contact_network table
+        Schema::create('club_emergency_contact_network', function (Blueprint $table) {
+            # 칼럼
+            $table->bigIncrements('id')->comment('동아리 비상연락망 번호');
+            $table->unsignedBigInteger('club_id')->comment('동아리 번호');
+            $table->string('email', 100)->nullable()->comment('비상 이메일');
+            $table->json('phone')->nullable()->comment('비상 전화번호');
+            $table->string('location', 100)->nullable()->comment('동아리 위치');
+            $table->timestampsTz($precision = 3);
+            $table->softDeletesTz($column = 'deleted_at', $precision = 3);
+
+            # 유니크 값
+            $table->unique('club_id');
+
+            # 인덱스
+            $table->index('id');
+            $table->index('club_id');
+            $table->index('updated_at');
+            $table->index('deleted_at');
+
+            # 키값
+            $table->foreign('club_id')->references('id')->on('clubs')->onUpdate('cascade')->onDelete('cascade');
+        });
+
         # departments table
         Schema::create('departments', function (Blueprint $table) {
             # 칼럼
@@ -523,6 +547,7 @@ return new class () extends Migration {
         Schema::dropIfExists('teams');
         Schema::dropIfExists('ranks');
         Schema::dropIfExists('departments');
+        Schema::dropIfExists('club_emergency_contact_network');
         Schema::dropIfExists('clubs');
         Schema::dropIfExists('personal_access_tokens');
     }

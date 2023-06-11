@@ -34,6 +34,8 @@ class DatabaseSeeder extends Seeder
             $this->call(MemberSeeder::class);
             # 랭크 권한 생성
             $this->call(RankPermissionSeeder::class);
+            # 비상 연락망 생성
+            $this->call(ClubEmergencyContactNetworkSeeder::class);
 
             # 사용자 접속 ip 생성
             $this->call(UserLoginSeeder::class);

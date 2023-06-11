@@ -56,6 +56,14 @@ class TestCommand extends Command
      */
     public function handle()
     {
+        dd(Rank::where('club_id', 1)
+        ->where('name', '방장')
+        ->value('id'));
+        dd(User::where('club_id', 1)
+        ->where('rank_id', Rank::where('club_id', 1)
+                                                ->where('name', '방장')
+                                                ->value('id'))
+        ->first());
         $faker = Faker::create('ko_KR');
         // 모든 부서 조회
         $departments = Team::with([
