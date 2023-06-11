@@ -230,33 +230,21 @@ class MenuController extends Controller
         $menu->delete();
 
         # 메뉴를 외래키로 가지고 있는 다른 튜플들도 삭제
-        if($menu->type === '') {
-            $borads = Board::where('club_id', $club->id)
+        if($menu->type === 'board') {
+            Board::where('club_id', $club->id)
                     ->where('menu_id', $menu->id)
-                    ->get();
-            foreach($borads as $borad) {
-                $borad->delete();
-            }
-        } elseif($menu->type === '') {
-            $bulletins = Bulletin::where('club_id', $club->id)
-                    ->where('menu_id', $menu->id)
-                    ->get();
-            foreach($bulletins as $bulletin) {
-                $bulletin->delete();
-            }
-        } elseif($menu->type === '') {
-            $imageBoards = ImageBoard::where('club_id', $club->id)
-                    ->where('menu_id', $menu->id)
-                    ->get();
-            foreach($imageBoards as $imageBoard) {
-                $imageBoard->delete();
-            }
-            $commonMoneys = CommonMoney::where('club_id', $club->id)
+                    ->delete();
+        } elseif($menu->type === 'bulletin') {
+            Bulletin::where('club_id', $club->id)
+                        ->where('menu_id', $menu->id)
+                        ->delete();
+        } elseif($menu->type === 'image_board') {
+            ImageBoard::where('club_id', $club->id)
+                                ->where('menu_id', $menu->id)
+                                ->delete();
+            CommonMoney::where('club_id', $club->id)
                                     ->where('menu_id', $menu->id)
-                                    ->get();
-            foreach($commonMoneys as $commonMoney) {
-                $commonMoney->delete();
-            }
+                                    ->delete();
             # 이미지 예외처리 추가해야함
         }
 
