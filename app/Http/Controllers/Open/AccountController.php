@@ -25,6 +25,8 @@ use App\Models\UserLogin;
  * public @method idFind(Request $request) :: 사용자 아이디 찾기
  * public @method passwordFind(Request $request) :: 사용자 비밀번호 찾기
  * public @method refreshtoken(Request $request) :: 토큰 재발급
+ * public @method emailDuplicateCheck(Request $request) :: 이메일 중복 확인
+ * public @method studentIdDuplicateCheck(Request $request) :: 학번 중복 확인
  */
 class AccountController extends Controller
 {
@@ -377,4 +379,64 @@ class AccountController extends Controller
             "access_token_end_at" => $jwtToken->access_token_end_at,
         ];
     }
+
+
+    # emailDuplicateCheck(Request $request) :: 이메일 중복 확인
+    public function emailDuplicateCheck(Request $request)
+    {
+        $club_code = intval($request->input('club_code'));
+        $email = $request->input('email');
+        if ($club_code === null || $email === null) {
+            abort(403, __('aborts.request'));
+        }
+
+        # 클럽 조회
+        $club = Club::where('code', $club_code)->first();
+        if($club === null) {
+            abort(403, __('aborts.does_not_exist.club_code'));
+        }
+
+        # 사용자 조회
+        $user = User::where('club_id', $club->id)
+                            ->where('email', $email)
+                            ->first();
+        if($user !== null) {
+            abort(403, __('aborts.does_not_exist.email'));
+        }
+
+        return response()->json([
+            'result' => 'success'
+        ], 201);
+    }
+
+
+
+    # studentIdDuplicateCheck(Request $request) :: 학번 중복 확인
+    public function studentIdDuplicateCheck(Request $request)
+    {
+        $club_code = intval($request->input('club_code'));
+        $student_id = intval($request->input('student_id'));
+        if ($club_code === null || $student_id === null) {
+            abort(403, __('aborts.request'));
+        }
+
+        # 클럽 조회
+        $club = Club::where('code', $club_code)->first();
+        if($club === null) {
+            abort(403, __('aborts.does_not_exist.club_code'));
+        }
+
+        # 사용자 조회
+        $user = User::where('club_id', $club->id)
+                            ->where('student_id', $student_id)
+                            ->first();
+        if($user !== null) {
+            abort(403, __('aborts.does_not_exist.student_id'));
+        }
+
+        return response()->json([
+            'result' => 'success'
+        ], 201);
+    }
+
 }
