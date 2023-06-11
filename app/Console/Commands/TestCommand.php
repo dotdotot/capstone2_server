@@ -56,8 +56,6 @@ class TestCommand extends Command
      */
     public function handle()
     {
-        $a = ['Title 1', 'Title 2', 'Title 3'];
-        dd($a);
         $faker = Faker::create('ko_KR');
         // 모든 부서 조회
         $departments = Team::with([

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Open;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
@@ -16,13 +16,10 @@ use App\Models\Team;
 use App\Models\TeamClosure;
 use App\Models\User;
 use App\Models\UserLogin;
+use App\Models\Menu;
 
 /**
- * public @method login(Request $request) :: 사용자 로그인
- * public @method joinMembership(Request $request) :: 사용자 회원가입
- * public @method idFind(Request $request) :: 사용자 아이디 찾기
- * public @method passwordFind(Request $request) :: 사용자 비밀번호 찾기
- * public @method refreshtoken(Request $request) :: 토큰 재발급
+ * public @method menu(Request $request) ::
  */
 class ClubController extends Controller
 {
@@ -30,4 +27,6 @@ class ClubController extends Controller
     {
         $this->client = $client;
     }
+
+
 }

@@ -17,6 +17,12 @@ return [
         'policy' => '존재하지 않는 정책입니다.',
         'notice' => '공지사항이 존재하지 않습니다.',
         'student_id' => '이미 존재하는 학번입니다.',
+        'email' => '이미 존재하는 이메일입니다.',
+
+    ],
+    'club_doex_not_exist' => [
+        'menu' => '클럽 내 메뉴가 존재하지 않습니다.',
+        'permission' => '권한이 없습니다.'
     ],
     'does_not_match' => [
         'user_id' => '사용자 아이디가 일치하지 않습니다.',
