@@ -319,7 +319,7 @@ class AccountController extends Controller
         ];
     }
 
-    // refreshtoken(Request $request) :: 토큰 재발급
+    # refreshtoken(Request $request) :: 토큰 재발급
     public function token(Request $request)
     {
         $club_id = intval($request->input('club_id'));
@@ -371,6 +371,7 @@ class AccountController extends Controller
                 }
             }
         }
+        $jwtToken->save();
 
         return [
             "club_id" => $club->id,
