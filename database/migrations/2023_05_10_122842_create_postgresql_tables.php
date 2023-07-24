@@ -286,7 +286,7 @@ return new class () extends Migration {
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
         });
 
-        # access_tokens table
+        # user_login table
         Schema::create('user_login', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('club_id')->comment('동아리번호');

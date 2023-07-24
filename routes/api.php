@@ -46,6 +46,8 @@ use App\Http\Controllers\Open\UserController as OpenUserController;
 use App\Http\Controllers\Open\ClubController as OpenClubController;
 use App\Http\Controllers\Admin\MenuController as AdminMenuController;
 use App\Http\Controllers\Open\OrganizationController as OpenOrganizationController;
+use App\Http\Controllers\Admin\AdminBoardController as AdminBoardController;
+use App\Http\Controllers\Common\CommonBoardController as CommonBoardController;
 
 # 로그인 후 사용 가능한 APIs
 Route::group(
@@ -84,6 +86,23 @@ Route::group(
                     Route::put('/', [AdminMenuController::class, 'updateMenu']);
                     # 메뉴 삭제 - api/clubs/{club_id}/users/{user_id}/menu
                     Route::delete('/', [AdminMenuController::class, 'deleteMenu']);
+                });
+
+                # 게시판
+                Route::prefix('board')->group(function () {
+                    # 게시판 반환 - api/clubs/{club_id}/users/{user_id}/board/
+                    Route::get('/', [CommonBoardController::class, 'menus']);
+                    # 특정 페이지의 게시판 반환 - api/clubs/{club_id}/users/{user_id}/board/
+                    Route::get('/', [CommonBoardController::class, 'menus']);
+                    # 게시판 추가 - api/clubs/{club_id}/users/{user_id}/menu
+                    Route::post('/', [CommonBoardController::class, 'saveMenu']);
+                    # 게시판 수정 - api/clubs/{club_id}/users/{user_id}/menu
+                    Route::put('/', [CommonBoardController::class, 'updateMenu']);
+                    # 게시판 삭제 - api/clubs/{club_id}/users/{user_id}/menu
+                    Route::delete('/', [CommonBoardController::class, 'deleteMenu']);
+
+                    # 관리자 권한으로 특정 게시판 삭제
+                    Route::delete('/', [AdminBoardController::class, 'deleteMenu']);
                 });
             }
         );
